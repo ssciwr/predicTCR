@@ -33,7 +33,7 @@ from predicTCR_server.model import (
 )
 
 
-def create_app(data_path: str = "/predicTCR_data"):
+def create_app(data_path: str = "/predictcr_data"):
     logger = get_logger("predicTCRServer")
     app = Flask("predicTCRServer")
     jwt_secret_key = os.environ.get("JWT_SECRET_KEY")

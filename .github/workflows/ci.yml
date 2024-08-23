@@ -41,7 +41,7 @@ jobs:
     name: "Backend :: Python ${{ matrix.python-version }}"
     strategy:
       matrix:
-        python-version: ["3.13"]
+        python-version: ["3.12"]
     defaults:
       run:
         working-directory: ./backend

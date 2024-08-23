@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM python:3.12-slim
 
 LABEL org.opencontainers.image.source=https://github.com/ssciwr/predicTCR
 LABEL org.opencontainers.image.description="predicTCR backend production image"

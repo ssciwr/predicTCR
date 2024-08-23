@@ -1,20 +1,20 @@
 services:
   backend:
-    image: ghcr.io/ssciwr/predicTCR_backend:${PREDICTCR_DOCKER_IMAGE_TAG:-latest}
+    image: ghcr.io/ssciwr/predictcr_backend:${PREDICTCR_DOCKER_IMAGE_TAG:-latest}
     build: ./backend
     volumes:
-      - ${PREDICTCR_DATA:-./docker_volume}:/predicTCR_data
+      - ${PREDICTCR_DATA:-./docker_volume}:/predictcr_data
     environment:
       - JWT_SECRET_KEY=${PREDICTCR_JWT_SECRET_KEY:-}
   frontend:
-    image: ghcr.io/ssciwr/predicTCR_frontend:${PREDICTCR_DOCKER_IMAGE_TAG:-latest}
+    image: ghcr.io/ssciwr/predictcr_frontend:${PREDICTCR_DOCKER_IMAGE_TAG:-latest}
     build: ./frontend
     ports:
       - 80:80
       - 443:443
     volumes:
-      - ${PREDICTCR_SSL_CERT:-./cert.pem}:/predicTCR_ssl_cert.pem
-      - ${PREDICTCR_SSL_KEY:-./key.pem}:/predicTCR_ssl_key.pem
+      - ${PREDICTCR_SSL_CERT:-./cert.pem}:/predictcr_ssl_cert.pem
+      - ${PREDICTCR_SSL_KEY:-./key.pem}:/predictcr_ssl_key.pem
   email:
     image: "boky/postfix"
     environment:
