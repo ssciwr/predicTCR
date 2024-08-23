@@ -286,7 +286,7 @@ def test_send_password_reset_email_invalid(app):
         body = str(last_email_msg.get_body()).replace("=\n", "")
         # no reset url in email
         assert "https://predictcr.iwr.uni-heidelberg.de/reset_password/" not in body
-        assert "no predicTCR account was found for this address" in body.lower()
+        assert "no predictcr account was found for this address" in body.lower()
 
 
 def test_reset_password(app):
