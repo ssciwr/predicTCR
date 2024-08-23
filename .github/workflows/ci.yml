@@ -1,0 +1,81 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: "Frontend :: node ${{ matrix.node-version }}"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22]
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+          cache-dependency-path: frontend/package-lock.json
+      - run: pnpm install
+      - run: pnpm run lint
+      - run: pnpm run build
+      - run: pnpm run test:unit:ci
+      - run: DEBUG=cypress:* pnpm run test:e2e:ci
+  backend:
+    runs-on: ubuntu-latest
+    name: "Backend :: Python ${{ matrix.python-version }}"
+    strategy:
+      matrix:
+        python-version: ["3.13"]
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e .[tests]
+      - run: python -m pytest --cov=predicTCR_server
+  docker:
+    runs-on: ubuntu-latest
+    name: "Docker"
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "VITE_REST_API_LOCATION=https://predictcr.iwr.uni-heidelberg.de/api" > frontend/.env
+      - run: docker compose build
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - run: |
+          echo $PREDICTCR_DOCKER_IMAGE_TAG
+          docker compose build
+          docker compose push
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          PREDICTCR_DOCKER_IMAGE_TAG: ${{ github.sha }}
+      - run: |
+          echo $PREDICTCR_DOCKER_IMAGE_TAG
+          docker compose build
+          docker compose push
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          PREDICTCR_DOCKER_IMAGE_TAG: "latest"

@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "predicTCR_server"
+description = "predicTCR backend"
+readme = "README.md"
+maintainers = [{ name = "Liam Keegan", email = "ssc@iwr.uni-heidelberg.de" }]
+dynamic = ["version"]
+requires-python = ">=3.12"
+license = { text = "MIT" }
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+  "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+  "flask",
+  "flask-cors",
+  "flask-jwt-extended",
+  "flask-sqlalchemy",
+  "argon2-cffi",
+  "click",
+  "gunicorn",
+  "itsdangerous",
+]
+
+[project.scripts]
+predicTCR_server = "predicTCR_server.main:main"
+
+[project.optional-dependencies]
+tests = ["pytest", "freezegun"]
+
+[tool.setuptools.dynamic]
+version = { attr = "predicTCR_server.__version__" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

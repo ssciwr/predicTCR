@@ -1,0 +1,75 @@
+@import "./base.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+body {
+  display: flex;
+}
+
+#app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+
+.bi {
+  width: 28px;
+  height: 28px;
+}
+
+a,
+.purple {
+  text-decoration: none;
+  color: #7132bdff;
+  transition: 0.5s;
+}
+
+.dark-purple {
+  color: #411c6d;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: #7132bd19;
+  }
+}
+
+td {
+  padding: 0 0.5em;
+}
+th {
+  background-color: #fff;
+  padding: 0 0.5em;
+  font-weight: bold;
+  text-align: center;
+}
+.zebra tr:nth-of-type(odd) {
+  background-color: #fff;
+}
+.zebra tr:nth-of-type(even) {
+  background-color: #7132bd19;
+}
+
+label {
+  display: inline-block;
+  width: 240px;
+  text-align: right;
+  padding-right: 0.5em;
+}
+
+input[type="submit"] {
+  margin-left: 240px;
+}
+
+.message {
+  font-style: italic;
+}
+
+.error-message {
+  font-style: italic;
+  color: #6e1818;
+}
+
+.pad-left {
+  padding-left: 0.5em;
+}
