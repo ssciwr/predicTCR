@@ -14,7 +14,6 @@ export default defineConfig({
       exclude: ["node_modules", "tests/"],
       extension: [".js", ".ts", ".vue"],
       requireEnv: true,
-      cypress: true,
       forceBuildInstrument: false,
     }),
   ],

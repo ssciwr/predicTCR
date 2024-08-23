@@ -41,9 +41,3 @@ Vitest unit tests:
 ```bash
 pnpm run npm run test:unit:ci
 ```
-
-Cypress e2e tests:
-
-```bash
-pnpm run npm run test:e2e
-```

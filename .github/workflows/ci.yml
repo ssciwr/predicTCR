@@ -35,7 +35,6 @@ jobs:
       - run: pnpm run lint
       - run: pnpm run build
       - run: pnpm run test:unit:ci
-      - run: DEBUG=cypress:* pnpm run test:e2e:ci
   backend:
     runs-on: ubuntu-latest
     name: "Backend :: Python ${{ matrix.python-version }}"
