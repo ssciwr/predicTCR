@@ -7,96 +7,99 @@ settings:
 importers:
   .:
     dependencies:
+      axios:
+        specifier: ^1.7.4
+        version: 1.7.4
       bootstrap-icons:
-        specifier: ^1.10.2
+        specifier: ^1.11.3
         version: 1.11.3
       jsbarcode:
-        specifier: ^3.11.5
+        specifier: ^3.11.6
         version: 3.11.6
       pinia:
-        specifier: ^2.0.21
+        specifier: ^2.2.2
         version: 2.2.2(typescript@4.7.4)(vue@3.4.38(typescript@4.7.4))
       vue:
-        specifier: ^3.2.38
+        specifier: ^3.4.38
         version: 3.4.38(typescript@4.7.4)
       vue-router:
-        specifier: ^4.1.5
+        specifier: ^4.4.3
         version: 4.4.3(vue@3.4.38(typescript@4.7.4))
     devDependencies:
       "@cypress/code-coverage":
-        specifier: ^3.10.0
+        specifier: ^3.12.45
         version: 3.12.45(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(babel-loader@9.1.3(@babel/core@7.25.2)(webpack@5.94.0))(cypress@10.11.0)(webpack@5.94.0)
       "@rushstack/eslint-patch":
-        specifier: ^1.1.4
+        specifier: ^1.10.4
         version: 1.10.4
       "@testing-library/vue":
         specifier: ^6.6.1
         version: 6.6.1(@vue/compiler-sfc@3.4.38)(vue@3.4.38(typescript@4.7.4))
       "@types/jsdom":
-        specifier: ^20.0.0
+        specifier: ^20.0.1
         version: 20.0.1
       "@types/node":
-        specifier: ^16.11.56
+        specifier: ^16.18.105
         version: 16.18.105
       "@vitejs/plugin-vue":
-        specifier: ^3.0.3
+        specifier: ^3.2.0
         version: 3.2.0(vite@3.2.10(@types/node@16.18.105)(terser@5.31.6))(vue@3.4.38(typescript@4.7.4))
       "@vitejs/plugin-vue-jsx":
-        specifier: ^2.0.1
+        specifier: ^2.1.1
         version: 2.1.1(vite@3.2.10(@types/node@16.18.105)(terser@5.31.6))(vue@3.4.38(typescript@4.7.4))
       "@vitest/coverage-c8":
-        specifier: ^0.25.1
+        specifier: ^0.25.8
         version: 0.25.8(jsdom@20.0.3)(terser@5.31.6)
       "@vue/eslint-config-prettier":
-        specifier: ^7.0.0
+        specifier: ^7.1.0
         version: 7.1.0(eslint@8.57.0)(prettier@2.8.8)
       "@vue/eslint-config-typescript":
-        specifier: ^11.0.0
+        specifier: ^11.0.3
         version: 11.0.3(eslint-plugin-vue@9.27.0(eslint@8.57.0))(eslint@8.57.0)(typescript@4.7.4)
       "@vue/test-utils":
-        specifier: ^2.0.2
+        specifier: ^2.4.6
         version: 2.4.6
       "@vue/tsconfig":
         specifier: ^0.1.3
         version: 0.1.3(@types/node@16.18.105)
       cypress:
-        specifier: ^10.7.0
+        specifier: ^10.11.0
         version: 10.11.0
       eslint:
-        specifier: ^8.22.0
+        specifier: ^8.57.0
         version: 8.57.0
       eslint-plugin-cypress:
-        specifier: ^2.12.1
+        specifier: ^2.15.2
         version: 2.15.2(eslint@8.57.0)
       eslint-plugin-vue:
-        specifier: ^9.3.0
+        specifier: ^9.27.0
         version: 9.27.0(eslint@8.57.0)
       jsdom:
-        specifier: ^20.0.0
+        specifier: ^20.0.3
         version: 20.0.3
       npm-run-all:
         specifier: ^4.1.5
         version: 4.1.5
       prettier:
-        specifier: ^2.7.1
+        specifier: ^2.8.8
         version: 2.8.8
       start-server-and-test:
-        specifier: ^1.14.0
-        version: 1.15.5
+        specifier: ^1.15.4
+        version: 1.15.4
       typescript:
         specifier: ~4.7.4
         version: 4.7.4
       vite:
-        specifier: ^3.0.9
+        specifier: ^3.2.10
         version: 3.2.10(@types/node@16.18.105)(terser@5.31.6)
       vite-plugin-istanbul:
-        specifier: ^3.0.2
+        specifier: ^3.0.4
         version: 3.0.4
       vitest:
-        specifier: ^0.23.0
+        specifier: ^0.23.4
         version: 0.23.4(jsdom@20.0.3)(terser@5.31.6)
       vue-tsc:
-        specifier: ^0.40.7
+        specifier: ^0.40.13
         version: 0.40.13(typescript@4.7.4)
 
 packages:
@@ -2067,6 +2070,12 @@ packages:
     resolution:
       {
         integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==,
+      }
+
+  axios@1.7.4:
+    resolution:
+      {
+        integrity: sha512-DukmaFRnY6AzAALSH4J2M3k6PkaC+MfaAGdEERRWcC9q3/TWQwLpHR8ZRLKTdQ3aBDL64EdluRDjJqKw+BPZEw==,
       }
 
   babel-loader@9.1.3:
@@ -4991,6 +5000,12 @@ packages:
         integrity: sha512-F2JHgJQ1iqwnHDcQjVBsq3n/uoaFL+iPW/eAeL7kVxy/2RrWaN4WroKjjvbsoRtv0ftelNyC01bjRhn/bhcf4A==,
       }
 
+  proxy-from-env@1.1.0:
+    resolution:
+      {
+        integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==,
+      }
+
   ps-tree@1.2.0:
     resolution:
       {
@@ -5451,13 +5466,12 @@ packages:
     engines: { node: ">=0.10.0" }
     hasBin: true
 
-  start-server-and-test@1.15.5:
+  start-server-and-test@1.15.4:
     resolution:
       {
-        integrity: sha512-o3EmkX0++GV+qsvIJ/OKWm3w91fD8uS/bPQVPrh/7loaxkpXSuAIHdnmN/P/regQK9eNAK76aBJcHt+OSTk+nA==,
+        integrity: sha512-ucQtp5+UCr0m4aHlY+aEV2JSYNTiMZKdSKK/bsIr6AlmwAWDYDnV7uGlWWEtWa7T4XvRI5cPYcPcQgeLqpz+Tg==,
       }
     engines: { node: ">=6" }
-    deprecated: this package has been deprecated
     hasBin: true
 
   stop-iteration-iterator@1.0.0:
@@ -7854,6 +7868,14 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
+  axios@1.7.4:
+    dependencies:
+      follow-redirects: 1.15.6(debug@4.3.4)
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
   babel-loader@9.1.3(@babel/core@7.25.2)(webpack@5.94.0):
     dependencies:
       "@babel/core": 7.25.2
@@ -9662,6 +9684,8 @@ snapshots:
 
   proxy-from-env@1.0.0: {}
 
+  proxy-from-env@1.1.0: {}
+
   ps-tree@1.2.0:
     dependencies:
       event-stream: 3.3.4
@@ -9929,7 +9953,7 @@ snapshots:
       safer-buffer: 2.1.2
       tweetnacl: 0.14.5
 
-  start-server-and-test@1.15.5:
+  start-server-and-test@1.15.4:
     dependencies:
       arg: 5.0.2
       bluebird: 3.7.2
