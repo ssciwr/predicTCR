@@ -6,6 +6,8 @@ services:
       - ${PREDICTCR_DATA:-./docker_volume}:/predictcr_data
     environment:
       - JWT_SECRET_KEY=${PREDICTCR_JWT_SECRET_KEY:-}
+    networks:
+      - predictcr-network
   frontend:
     image: ghcr.io/ssciwr/predictcr_frontend:${PREDICTCR_DOCKER_IMAGE_TAG:-latest}
     build: ./frontend
@@ -15,7 +17,15 @@ services:
     volumes:
       - ${PREDICTCR_SSL_CERT:-./cert.pem}:/predictcr_ssl_cert.pem
       - ${PREDICTCR_SSL_KEY:-./key.pem}:/predictcr_ssl_key.pem
+    networks:
+      - predictcr-network
   email:
     image: "boky/postfix"
     environment:
       - ALLOW_EMPTY_SENDER_DOMAINS="true"
+    networks:
+      - predictcr-network
+
+networks:
+  predictcr-network:
+    name: predictcr

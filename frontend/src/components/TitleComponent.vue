@@ -1,7 +1,10 @@
 <template>
   <div class="greetings">
-    <h1 class="dark-purple">predicTCR</h1>
-    <h3>Multiplexed nanopore DNA sequencing.</h3>
+    <h1 class="dark-purple">predicTCR v2</h1>
+    <h3>
+      Prediction of tumor-reactive T cell receptors from scRNA-seq data for
+      personalized T cell therapy.
+    </h3>
   </div>
 </template>
 

@@ -14,7 +14,8 @@ apiClient
     console.log(response);
     message.value = response.data.message;
     icon.value = "bi-person-check";
-    title.value = "Account Activation Successful";
+    title.value =
+      "Email validation successful - after an administrator enables your account you will be able to log in and submit samples.";
   })
   .catch((error) => {
     if (error.response != null) {
@@ -23,7 +24,7 @@ apiClient
       message.value = "Cannot connect to server.";
     }
     icon.value = "bi-person-exclamation";
-    title.value = "Account Activation Failed";
+    title.value = "Account Activation Failed.";
   });
 </script>
 

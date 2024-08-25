@@ -30,7 +30,7 @@ dependencies = [
 predicTCR_server = "predicTCR_server.main:main"
 
 [project.optional-dependencies]
-tests = ["pytest", "freezegun"]
+tests = ["pytest"]
 
 [tool.setuptools.dynamic]
 version = { attr = "predicTCR_server.__version__" }

@@ -24,6 +24,10 @@ defineProps({
 .details {
   flex: 1;
   margin-left: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  margin: 10px;
+  padding: 5px;
 }
 
 i {

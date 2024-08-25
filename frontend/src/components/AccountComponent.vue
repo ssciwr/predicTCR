@@ -66,6 +66,13 @@ function do_change_password() {
   </ListItem>
   <ListItem title="Change password" icon="bi-key">
     <form @submit.prevent="do_change_password">
+      <input
+        id="login_email"
+        placeholder="your.name@domain.com"
+        maxlength="256"
+        autocomplete="username"
+        hidden="true"
+      />
       <p>
         <label for="account_passwd_old">Current Password:</label>
         <input
@@ -74,6 +81,7 @@ function do_change_password() {
           type="password"
           placeholder="current password"
           maxlength="256"
+          autocomplete="current-password"
         />
       </p>
       <p>
@@ -85,6 +93,7 @@ function do_change_password() {
           placeholder="new password"
           :title="new_password_message"
           maxlength="256"
+          autocomplete="new-password"
         />
         <span class="error-message pad-left">{{ new_password_message }}</span>
       </p>
@@ -97,6 +106,7 @@ function do_change_password() {
           placeholder="new password"
           :title="new_password2_message"
           maxlength="256"
+          autocomplete="new-password"
         />
         <span class="error-message pad-left">{{ new_password2_message }}</span>
       </p>

@@ -36,8 +36,9 @@ function do_login() {
         <input
           v-model="login_email_address"
           id="login_email"
-          placeholder="your.name@uni-heidelberg.de"
+          placeholder="your.name@domain.com"
           maxlength="256"
+          autocomplete="username"
         />
       </p>
       <p>
@@ -47,6 +48,7 @@ function do_login() {
           id="login_password"
           type="password"
           maxlength="256"
+          autocomplete="current-password"
         />
       </p>
       <p>

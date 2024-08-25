@@ -8,7 +8,7 @@ const signup_email_address_message = computed(() => {
   if (validate_email(signup_email_address.value)) {
     return "";
   } else {
-    return "Please use a uni-heidelberg, dkfz or embl email address.";
+    return "Please use a valid email address.";
   }
 });
 const signup_password = ref("");
@@ -39,8 +39,9 @@ function do_signup() {
 <template>
   <ListItem title="Sign up" icon="bi-person-plus">
     <p>
-      If you don't yet have an account, you can create one by entering your
-      Heidelberg Uni, EMBL or DKFZ email address and choosing a password:
+      If you don't yet have an account, you can create one by entering a valid
+      email address and choosing a password. Your account will then need to be
+      manually activated by an administrator before you are able to log in:
     </p>
     <form @submit.prevent="do_signup">
       <div>
@@ -48,9 +49,10 @@ function do_signup() {
         <input
           v-model="signup_email_address"
           id="signup_email"
-          placeholder="your.name@uni-heidelberg.de"
+          placeholder="your.name@domain.com"
           :title="signup_email_address_message"
           maxlength="256"
+          autocomplete="username"
         />
         <span class="error-message pad-left">{{
           signup_email_address_message
@@ -65,6 +67,7 @@ function do_signup() {
           placeholder="password"
           :title="signup_password_message"
           maxlength="256"
+          autocomplete="new-password"
         />
         <span class="error-message pad-left">{{
           signup_password_message
