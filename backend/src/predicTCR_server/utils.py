@@ -1,12 +1,14 @@
 from __future__ import annotations
 from typing import Optional
-import datetime
 from predicTCR_server.logger import get_logger
-import string
-import math
 from itsdangerous.url_safe import URLSafeTimedSerializer
+from datetime import datetime
 
 logger = get_logger("predicTCRServer")
+
+
+def timestamp_now() -> int:
+    return int(datetime.now().timestamp())
 
 
 def _encode_string_as_token(string_to_encode: str, salt: str, secret_key: str) -> str:
@@ -44,24 +46,3 @@ def decode_password_reset_token(token: str, secret_key: str) -> Optional[str]:
     return _decode_string_from_token(
         token, "password-reset", secret_key, one_hour_in_secs
     )
-
-
-def get_start_of_week(current_date: Optional[datetime.date] = None) -> datetime.date:
-    if current_date is None:
-        current_date = datetime.date.today()
-    year, week, day = current_date.isocalendar()
-    return datetime.date.fromisocalendar(year, week, 1)
-
-
-def get_primary_key(
-    year: int, week: int, current_count: int, n_rows: int, n_cols: int
-) -> Optional[str]:
-    max_samples = n_rows * n_cols
-    row_labels = string.ascii_uppercase
-    if current_count >= max_samples:
-        return None
-
-    i_row = math.floor(current_count / n_cols)
-    i_col = current_count % n_cols
-    yy = year % 100
-    return f"{yy:02d}_{week:02d}_{row_labels[i_row]}{i_col + 1}"

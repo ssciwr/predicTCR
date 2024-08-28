@@ -28,7 +28,6 @@ const login_title = computed(() => {
       </nav>
     </div>
   </header>
-
   <RouterView />
 </template>
 

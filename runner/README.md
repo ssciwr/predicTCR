@@ -1,21 +1,30 @@
 # predicTCR Runner
 
-This will be a script or Docker image to do the Python+R analysis.
+The runner is a service that regularly polls the predicTCR web service for new jobs.
 
-It needs to
+If a job is available, it
 
-- Regularly poll the predicTCR web service to ask if there is a sample that needs processing
-- If one is available
-  - claim the sample
-  - download the input files
-  - run the analysis
-  - upload the results
+- downloads the input files for this job to a temporary directoy
+- copies the contents of the scripts folder to this directory
+- runs script.sh in this directory
+- uploads result.zip from this directory to the web service
 
-Authentification can be done via a long-lived JWT token that admins can request online.
+A JWT token is required to authenticate the runner with the web service,
+which can be generated on the admin page of the website.
 
-Deployment could be done with a Docker image and a docker-compose config.
+Any required conda dependencies should be added to env.yaml.
 
-Admin would set environment variables to provide
+## Use
 
-- path to model weights
-- JWT token
+To use the runner, the JWT token and other settings below should be set in environment variables,
+or in a file `.env` in the same location as the docker-compose.yml, e.g.:
+
+```
+PREDICTCR_API_URL="https://predictcr.iwr.uni-heidelberg.de/api"
+PREDICTCR_JWT_TOKEN="abc123"
+PREDICTCR_RUNNER_DATA_DIR="/data"
+PREDICTCR_REPLICAS=2
+PREDICTCR_POLL_INTERVAL=5
+```
+
+`docker compose up -d` will then start `PREDICTCR_REPLICAS` runner images in the background.

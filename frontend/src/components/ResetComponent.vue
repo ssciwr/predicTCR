@@ -30,8 +30,9 @@ function do_reset() {
         <input
           v-model="reset_email_address"
           id="reset_email"
-          placeholder="your.name@uni-heidelberg.de"
+          placeholder="your.name@domain.com"
           maxlength="256"
+          autocomplete="username"
         />
       </p>
       <p>

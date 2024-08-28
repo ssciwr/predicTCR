@@ -1,9 +1,5 @@
 import { expect, test } from "vitest";
-import {
-  validate_password,
-  validate_email,
-  validate_sample_name,
-} from "../validation";
+import { validate_password, validate_email } from "../validation";
 
 test.each([
   "",
@@ -24,7 +20,7 @@ test.each([
   expect(validate_password(valid_password)).toBeTruthy();
 });
 
-test.each(["", "a@b.com", "@embl.de", "joe@embl.dex"])(
+test.each(["", "asadas", "@asdas.com"])(
   "validate_email::invalid %s",
   (invalid_email) => {
     expect(validate_email(invalid_email)).toBeFalsy();
@@ -32,6 +28,9 @@ test.each(["", "a@b.com", "@embl.de", "joe@embl.dex"])(
 );
 
 test.each([
+  "a@b.com",
+  "me@embl.de",
+  "joe@embl.dex",
   "x@embl.de",
   "a.b@dkfz.de",
   "x.y.z@uni-heidelberg.de",
@@ -39,17 +38,3 @@ test.each([
 ])("validate_email::valid %s", (valid_email) => {
   expect(validate_email(valid_email)).toBeTruthy();
 });
-
-test.each(["", "a@b.com", "as ds", "asd_qwer/asd"])(
-  "validate_sample_name::invalid %s",
-  (invalid_sample_name) => {
-    expect(validate_sample_name(invalid_sample_name)).toBeFalsy();
-  },
-);
-
-test.each(["zxcQWD234", "gf_asde_23958_QGHSD"])(
-  "validate_sample_name::valid %s",
-  (valid_sample_name) => {
-    expect(validate_sample_name(valid_sample_name)).toBeTruthy();
-  },
-);
