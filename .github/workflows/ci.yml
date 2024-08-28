@@ -51,6 +51,22 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: pip install -e .[tests]
       - run: python -m pytest -sv
+  runner:
+    runs-on: ubuntu-latest
+    name: "Runner :: Python ${{ matrix.python-version }}"
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+    defaults:
+      run:
+        working-directory: ./runner
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install pytest
+      - run: python -m pytest -sv
   docker:
     runs-on: ubuntu-latest
     name: "Docker"
@@ -68,11 +84,17 @@ jobs:
           echo $PREDICTCR_DOCKER_IMAGE_TAG
           docker compose build
           docker compose push
+          cd runner
+          docker compose build
+          docker compose push
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           PREDICTCR_DOCKER_IMAGE_TAG: ${{ github.sha }}
       - run: |
           echo $PREDICTCR_DOCKER_IMAGE_TAG
+          docker compose build
+          docker compose push
+          cd runner
           docker compose build
           docker compose push
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

@@ -23,8 +23,18 @@ or in a file `.env` in the same location as the docker-compose.yml, e.g.:
 PREDICTCR_API_URL="https://predictcr.iwr.uni-heidelberg.de/api"
 PREDICTCR_JWT_TOKEN="abc123"
 PREDICTCR_RUNNER_DATA_DIR="/data"
-PREDICTCR_REPLICAS=2
+PREDICTCR_RUNNERS=4
 PREDICTCR_POLL_INTERVAL=5
 ```
 
-`docker compose up -d` will then start `PREDICTCR_REPLICAS` runner images in the background.
+With this .env file, `docker compose up -d` will start 4 runner images in the background, which poll the web service for new jobs every 5 seconds.
+
+## Development
+
+To test locally using Docker, you can directly talk to the backend service (this works because both docker-compose files use the same docker network)
+
+```
+PREDICTCR_API_URL="http://backend:8080/api"
+PREDICTCR_JWT_TOKEN="" # you need to generate this using the admin page of your local instance
+PREDICTCR_LOG_LEVEL=DEBUG
+```
