@@ -11,34 +11,28 @@ The source code for the [predicTCR website](https://predictcr.lkeegan.dev/).
 Users of the site can
 
 - sign up with a valid email address
-- request a sample, optionally providing a reference sequence
+- upload a sample to be analyzed
 - see a list of their requested samples
-- download their reference sequences
-- download full analysis data
-- automatically receive an email with their results
+- download the analysis results
+- TODO automatically receive an email with their results
 
 ### Admins
 
 Users with admin rights can additionally
 
 - see a list of all users
-- see a list of all requested samples and results
-- change the site settings
-  - set which day of the week sample submission closes
-  - set number of plate rows/cols
-  - add/remove running options
-- download a zipped tsv of requests from the current week
-  - this includes the reference sequences as fasta files
-- upload a zipfile with successful analysis results to be sent to the user
-- upload unsuccessful analysis result status to be sent to the user
+- see a list of all samples and results
+- create an API token for a runner to use
 
-### REST API
+## Runners
 
-Admins can also generate an API token,
-then do all of the above programatically using
-the provided REST API:
+The analysis of the samples is done by runners, which
 
-- [api_examples.ipynb](https://github.com/ssciwr/predicTCR/blob/main/notebooks/api_examples.ipynb)
+- are a separate service packaged as a docker container
+- can be run on any machine with docker installed
+- authenticate with the API using a token
+- regularly check for new samples to analyze
+- do sample analysis and upload the results
 
 ## Developer info
 

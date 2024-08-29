@@ -2,8 +2,6 @@ services:
   runner:
     image: ghcr.io/ssciwr/predictcr_runner:${PREDICTCR_DOCKER_IMAGE_TAG:-latest}
     build: .
-    volumes:
-      - ${PREDICTCR_RUNNER_DATA_DIR:-./data}:/data
     environment:
       - PREDICTCR_API_URL=${PREDICTCR_API_URL:-https://predictcr.lkeegan.dev/api}
       - PREDICTCR_JWT_TOKEN=${PREDICTCR_JWT_TOKEN:-}
@@ -11,7 +9,7 @@ services:
       - PREDICTCR_LOG_LEVEL=${PREDICTCR_LOG_LEVEL:-INFO}
     deploy:
       mode: replicated
-      replicas: ${PREDICTCR_RUNNERS:-1}
+      replicas: ${PREDICTCR_RUNNER_JOBS:-1}
     networks:
       - predictcr-network
 

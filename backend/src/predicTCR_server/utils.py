@@ -4,7 +4,7 @@ from predicTCR_server.logger import get_logger
 from itsdangerous.url_safe import URLSafeTimedSerializer
 from datetime import datetime
 
-logger = get_logger("predicTCRServer")
+logger = get_logger()
 
 
 def timestamp_now() -> int:

@@ -2,7 +2,7 @@ from __future__ import annotations
 import logging
 
 
-def get_logger(name: str):
+def get_logger(name: str = "predicTCRServer") -> logging.Logger:
     logger = logging.getLogger(name)
     if not logger.handlers:
         logger.setLevel(logging.DEBUG)
