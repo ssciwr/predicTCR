@@ -4,24 +4,29 @@ Some information on how to locally build and deploy the website if you would lik
 
 ## Run locally with docker compose
 
-Clone the repo:
+Requires docker and docker compose.
+
+1. clone the repo:
 
 ```sh
 git clone https://github.com/ssciwr/predicTCR.git
 cd predicTCR
 ```
 
-Generate a SSL cert/key pair:
+2. generate a SSL cert/key pair:
 
 ```
 openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 365 -nodes -subj '/CN=localhost'
 ```
 
-To build and run the website locally in docker containers on your computer:
+3. build and run the website locally in docker containers on your computer:
 
 ```sh
 docker compose up --build
 ```
+
+The website is then served at https://localhost/
+(note that the SSL keys are self-signed keys and your browser will still warn about the site being insecure.)
 
 ### SSL
 
@@ -41,11 +46,6 @@ JWT tokens used for authentication are generated using a secret key.
 This can be set using the `PREDICTCR_JWT_SECRET_KEY` environment variable.
 If this is not set or is less than 16 chars, a new random secret key is generated when the server starts.
 
-### URL
-
-The website is then served at https://localhost/
-Note that the SSL keys are self-signed keys and your browser will still warn about the site being insecure.
-
 ### User signup activation email
 
 When you sign up for an account when running locally it will send an email (if port 25 is open) to whatever address you use.
@@ -63,16 +63,18 @@ sqlite> UPDATE user SET is_admin=true WHERE email='user@embl.de';
 sqlite> .quit
 ```
 
-## Run locally with Python and npm
+## Run locally with Python and pnpm
 
-Clone the repo:
+Requires Python and [pnpm](https://pnpm.io/installation#using-a-standalone-script)
+
+1. clone the repo:
 
 ```sh
 git clone https://github.com/ssciwr/predicTCR.git
 cd predicTCR
 ```
 
-Install and run the backend:
+2. install and run the backend development server:
 
 ```sh
 cd backend
@@ -81,16 +83,16 @@ cd ..
 predicTCR_server
 ```
 
-Install and run the frontend:
+3. install and run the frontend development server:
 
 ```sh
 cd frontend
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 The website is then served at http://localhost:5173/.
-Note that email activation will not work without the postfix docker image.
+Note that the email activation message will be written to the console instead of being sent by email.
 
 ## Implementation
 
