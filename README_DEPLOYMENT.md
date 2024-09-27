@@ -32,14 +32,21 @@ sudo docker compose ps
 sudo docker compose logs
 ```
 
-### Renew SSL certificate
+### SSL certificate
 
-Certbot attempts to auto-renew but this requires port 80, which is already taken by our web server.
-To update the certificate manually:
+To generate initial SSL certificates for domain `domain.com` on the VM:
+
+```
+sudo docker run -it --rm --name certbot -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/lib/letsencrypt:/var/lib/letsencrypt" -p80:80 -p443:443 certbot/certbot certonly -d domain.com
+```
+
+choose option 1, certs will be saved to `/etc/letsencrypt/live/domain.com/`
+
+They need renewing every three months, to update the certificate manually:
 
 ```
 sudo docker compose down
-sudo certbot renew
+sudo docker run -it --rm --name certbot -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/lib/letsencrypt:/var/lib/letsencrypt" -p80:80 -p443:443 certbot/certbot renew
 sudo docker compose up -d
 ```
 
