@@ -67,12 +67,12 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: pip install pytest
       - run: python -m pytest -sv
-  docker:
+  docker-website:
     runs-on: ubuntu-latest
-    name: "Docker"
+    name: "Docker website"
     steps:
       - uses: actions/checkout@v4
-      - run: echo "VITE_REST_API_LOCATION=https://predictcr.iwr.uni-heidelberg.de/api" > frontend/.env
+      - run: echo "VITE_REST_API_LOCATION=https://predictcr.lkeegan.dev/api" > frontend/.env
       - run: docker compose build
       - uses: docker/login-action@v3
         with:
@@ -84,9 +84,6 @@ jobs:
           echo $PREDICTCR_DOCKER_IMAGE_TAG
           docker compose build
           docker compose push
-          cd runner
-          docker compose build
-          docker compose push
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           PREDICTCR_DOCKER_IMAGE_TAG: ${{ github.sha }}
@@ -94,7 +91,33 @@ jobs:
           echo $PREDICTCR_DOCKER_IMAGE_TAG
           docker compose build
           docker compose push
-          cd runner
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          PREDICTCR_DOCKER_IMAGE_TAG: "latest"
+  docker-runner:
+    runs-on: ubuntu-latest
+    name: "Docker runner"
+    defaults:
+      run:
+        working-directory: ./runner
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose build
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - run: |
+          echo $PREDICTCR_DOCKER_IMAGE_TAG
+          docker compose build
+          docker compose push
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          PREDICTCR_DOCKER_IMAGE_TAG: ${{ github.sha }}
+      - run: |
+          echo $PREDICTCR_DOCKER_IMAGE_TAG
           docker compose build
           docker compose push
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
