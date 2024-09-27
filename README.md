@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/ssciwr/predicTCR/actions/workflows/ci.yml/badge.svg)](https://github.com/ssciwr/predicTCR/actions/workflows/ci.yml)
 
-The source code for the [predicTCR website](https://predictcr.iwr.uni-heidelberg.de/).
+The source code for the [predicTCR website](https://predictcr.lkeegan.dev/).
 
 ## Implemented features
 
