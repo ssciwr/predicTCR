@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  frontend:
+  web-frontend:
     name: "Frontend :: node ${{ matrix.node-version }}"
     runs-on: ubuntu-latest
     strategy:
@@ -35,7 +35,7 @@ jobs:
       - run: pnpm run lint
       - run: pnpm run build
       - run: pnpm run test:unit:ci
-  backend:
+  web-backend:
     runs-on: ubuntu-latest
     name: "Backend :: Python ${{ matrix.python-version }}"
     strategy:
@@ -51,23 +51,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: pip install -e .[tests]
       - run: python -m pytest -sv
-  runner:
-    runs-on: ubuntu-latest
-    name: "Runner :: Python ${{ matrix.python-version }}"
-    strategy:
-      matrix:
-        python-version: ["3.12"]
-    defaults:
-      run:
-        working-directory: ./runner
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      - run: pip install pytest
-      - run: python -m pytest -sv
-  docker-website:
+  web-docker:
     runs-on: ubuntu-latest
     name: "Docker website"
     steps:
@@ -94,7 +78,23 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           PREDICTCR_DOCKER_IMAGE_TAG: "latest"
-  docker-runner:
+  runner-python:
+    runs-on: ubuntu-latest
+    name: "Runner :: Python ${{ matrix.python-version }}"
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+    defaults:
+      run:
+        working-directory: ./runner
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install pytest
+      - run: python -m pytest -sv
+  runner-docker:
     runs-on: ubuntu-latest
     name: "Docker runner"
     defaults:
