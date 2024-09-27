@@ -1,6 +1,6 @@
 # predicTCR website deployment info
 
-Some information on how to deploy the website - currently it is deployed on a heicloud VM.
+Some information on how to deploy the website.
 
 ## Production deployment
 

@@ -5,7 +5,7 @@ services:
     volumes:
       - ${PREDICTCR_RUNNER_DATA_DIR:-./data}:/data
     environment:
-      - PREDICTCR_API_URL=${PREDICTCR_API_URL:-https://predictcr.iwr.uni-heidelberg.de/api}
+      - PREDICTCR_API_URL=${PREDICTCR_API_URL:-https://predictcr.lkeegan.dev/api}
       - PREDICTCR_JWT_TOKEN=${PREDICTCR_JWT_TOKEN:-}
       - PREDICTCR_POLL_INTERVAL=${PREDICTCR_POLL_INTERVAL:-5}
       - PREDICTCR_LOG_LEVEL=${PREDICTCR_LOG_LEVEL:-INFO}

@@ -20,7 +20,7 @@ To use the runner, the JWT token and other settings below should be set in envir
 or in a file `.env` in the same location as the docker-compose.yml, e.g.:
 
 ```
-PREDICTCR_API_URL="https://predictcr.iwr.uni-heidelberg.de/api"
+PREDICTCR_API_URL="https://predictcr.lkeegan.dev/api"
 PREDICTCR_JWT_TOKEN="abc123"
 PREDICTCR_RUNNER_DATA_DIR="/data"
 PREDICTCR_RUNNERS=4
