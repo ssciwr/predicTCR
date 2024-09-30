@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { apiClient } from "@/utils/api-client";
 import ListItem from "@/components/ListItem.vue";
+import { FwbInput, FwbButton, FwbAlert } from "flowbite-vue";
 const reset_email_address = ref("");
 const reset_message = ref("");
 function do_reset() {
@@ -19,28 +20,26 @@ function do_reset() {
 </script>
 
 <template>
-  <ListItem title="Reset password" icon="bi-person">
+  <ListItem title="Reset password">
     <p>
       If you have forgotten your password you can request a password reset email
       by entering the email address you used to sign up:
     </p>
-    <form @submit.prevent="do_reset">
-      <p>
-        <label for="reset_email">Email:</label>
-        <input
-          v-model="reset_email_address"
-          id="reset_email"
-          placeholder="your.name@domain.com"
-          maxlength="256"
-          autocomplete="username"
-        />
-      </p>
-      <p>
-        <input type="submit" />
-        <span class="error-message pad-left">
-          {{ reset_message }}
-        </span>
-      </p>
-    </form>
+    <div class="mt-4">
+      <fwb-input
+        v-model="reset_email_address"
+        required
+        id="reset_email"
+        placeholder=""
+        maxlength="256"
+        autocomplete="username"
+        label="Email"
+        class="mb-2"
+      />
+      <fwb-button @click="do_reset" class="mb-2">Submit</fwb-button>
+      <fwb-alert type="danger" v-if="reset_message.length > 0">
+        {{ reset_message }}
+      </fwb-alert>
+    </div>
   </ListItem>
 </template>

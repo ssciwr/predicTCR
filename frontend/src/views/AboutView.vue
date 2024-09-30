@@ -1,36 +1,135 @@
 <script setup lang="ts">
-import ListItem from "@/components/ListItem.vue";
+import {
+  FwbA,
+  FwbJumbotron,
+  FwbButton,
+  FwbTimeline,
+  FwbTimelineBody,
+  FwbTimelineContent,
+  FwbTimelineItem,
+  FwbTimelinePoint,
+  FwbTimelineTitle,
+  FwbModal,
+} from "flowbite-vue";
+import { ref } from "vue";
+import LoginComponent from "@/components/LoginComponent.vue";
+import SignupComponent from "@/components/SignupComponent.vue";
+import { RouterLink } from "vue-router";
+const showModalLogin = ref(false);
+function closeModals() {
+  showModalSignup.value = false;
+  showModalLogin.value = false;
+}
+function openModalLogin() {
+  showModalSignup.value = false;
+  showModalLogin.value = true;
+}
+const showModalSignup = ref(false);
+function openModalSignup() {
+  showModalLogin.value = false;
+  showModalSignup.value = true;
+}
 </script>
 
 <template>
   <main>
-    <ListItem title="About" icon="bi-lightbulb">
-      <p>
-        Based on code from the
-        <a href="https://www.dkfz.de/" target="_blank">DKFZ</a>. Read our paper
-        at
-        <a
-          href="https://www.nature.com/articles/s41587-024-02161-y"
-          target="_blank"
-          >Nature Biotechnology</a
+    <fwb-jumbotron
+      header-text="predicTCR v2"
+      header-classes="text-slate-100"
+      sub-text="Prediction of tumor-reactive T cell receptors from scRNA-seq data for personalized T cell therapy."
+      sub-text-classes="text-slate-300"
+      class="mb-4 bg-slate-800 bg-[url('/logo.png')] bg-no-repeat bg-center bg-cover md:rounded-lg"
+    >
+      <div class="flex flex-row justify-center">
+        <fwb-button
+          @click="openModalSignup"
+          class="mr-4 inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800"
         >
-      </p>
-    </ListItem>
-    <ListItem title="Feedback" icon="bi-chat">
-      Questions or feedback about this service are welcome at
-      <a href="mailto:e.green@dkfz.de?subject=predicTCR">e.green@dkfz.de</a>
-    </ListItem>
-    <ListItem title="References" icon="bi-book">
-      <p>
-        The predicTCR
-        <a href="https://github.com/ssciwr/predicTCR">web service</a> was
-        developed by the
-        <a href="https://ssc.iwr.uni-heidelberg.de/"
-          >Scientific Software Center</a
+          Sign up
+        </fwb-button>
+        <fwb-button
+          @click="openModalLogin"
+          class="mr-2 inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-gray-500 hover:bg-gray-600"
         >
-        of Heidelberg University.
-      </p>
-    </ListItem>
-    <ListItem title="Funding" icon="bi-info-circle"> Funding info? </ListItem>
+          Log in
+        </fwb-button>
+      </div>
+    </fwb-jumbotron>
+    <div class="p-4">
+      <fwb-timeline>
+        <fwb-timeline-item>
+          <fwb-timeline-point>
+            <img src="/logo.png" />
+          </fwb-timeline-point>
+          <fwb-timeline-content>
+            <fwb-timeline-title> About </fwb-timeline-title>
+            <fwb-timeline-body>
+              Based on code from the
+              <fwb-a href="https://www.dkfz.de/" target="_blank">DKFZ</fwb-a>.
+              Read our paper at
+              <fwb-a
+                href="https://www.nature.com/articles/s41587-024-02161-y"
+                target="_blank"
+                >Nature Biotechnology</fwb-a
+              >
+            </fwb-timeline-body>
+          </fwb-timeline-content>
+        </fwb-timeline-item>
+        <fwb-timeline-item>
+          <fwb-timeline-point>
+            <img src="/logo.png" />
+          </fwb-timeline-point>
+          <fwb-timeline-content>
+            <fwb-timeline-title> Feedback </fwb-timeline-title>
+            <fwb-timeline-body>
+              <p>
+                Questions or feedback about this service are welcome at
+                <fwb-a href="mailto:predictcr@dkfz.de">predictcr@dkfz.de</fwb-a>
+              </p>
+            </fwb-timeline-body>
+          </fwb-timeline-content>
+        </fwb-timeline-item>
+        <fwb-timeline-item>
+          <fwb-timeline-point>
+            <img src="/logo.png" />
+          </fwb-timeline-point>
+          <fwb-timeline-content>
+            <fwb-timeline-title> References </fwb-timeline-title>
+            <fwb-timeline-body>
+              <p>
+                The
+                <fwb-a href="https://github.com/ssciwr/predicTCR"
+                  >predicTCR web service</fwb-a
+                >
+                was developed by the
+                <fwb-a href="https://ssc.iwr.uni-heidelberg.de/"
+                  >Scientific Software Center</fwb-a
+                >
+                of Heidelberg University.
+              </p>
+            </fwb-timeline-body>
+          </fwb-timeline-content>
+        </fwb-timeline-item>
+      </fwb-timeline>
+    </div>
   </main>
+
+  <fwb-modal size="md" v-if="showModalLogin" @close="closeModals">
+    <template #header>
+      <div class="flex items-center text-lg">Login</div>
+    </template>
+    <template #body>
+      <LoginComponent />
+      <RouterLink to="/login">Forgot your password?</RouterLink>
+    </template>
+  </fwb-modal>
+
+  <fwb-modal size="md" v-if="showModalSignup" @close="closeModals">
+    <template #header>
+      <div class="flex items-center text-lg">Sign up</div>
+    </template>
+    <template #body>
+      <SignupComponent />
+    </template>
+  </fwb-modal>
 </template>
