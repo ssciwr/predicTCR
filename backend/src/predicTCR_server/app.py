@@ -47,8 +47,8 @@ def create_app(data_path: str = "/predictcr_data"):
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(minutes=60)
     app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{data_path}/predicTCR.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    # limit max file upload size to 20mb
-    app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024
+    # limit max file upload size to 100mb
+    app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024
     app.config["PREDICTCR_DATA_PATH"] = data_path
 
     CORS(app)
@@ -147,9 +147,9 @@ def create_app(data_path: str = "/predictcr_data"):
     def samples():
         return get_samples(current_user.email)
 
-    @app.route("/api/input_file", methods=["POST"])
+    @app.route("/api/input_h5_file", methods=["POST"])
     @jwt_required()
-    def input_file():
+    def input_h5_file():
         sample_id = request.json.get("sample_id", None)
         logger.info(
             f"User {current_user.email} requesting results for sample {sample_id}"
@@ -163,7 +163,25 @@ def create_app(data_path: str = "/predictcr_data"):
         if user_sample is None:
             logger.info(f"  -> sample {sample_id} not found")
             return jsonify(message="Sample not found"), 400
-        return flask.send_file(user_sample.input_file_path(), as_attachment=True)
+        return flask.send_file(user_sample.input_h5_file_path(), as_attachment=True)
+
+    @app.route("/api/input_csv_file", methods=["POST"])
+    @jwt_required()
+    def input_csv_file():
+        sample_id = request.json.get("sample_id", None)
+        logger.info(
+            f"User {current_user.email} requesting results for sample {sample_id}"
+        )
+        filters = {"id": sample_id}
+        if not current_user.is_admin and not current_user.is_runner:
+            filters["email"] = current_user.email
+        user_sample = db.session.execute(
+            db.select(Sample).filter_by(**filters)
+        ).scalar_one_or_none()
+        if user_sample is None:
+            logger.info(f"  -> sample {sample_id} not found")
+            return jsonify(message="Sample not found"), 400
+        return flask.send_file(user_sample.input_csv_file_path(), as_attachment=True)
 
     @app.route("/api/result", methods=["POST"])
     @jwt_required()
@@ -199,10 +217,11 @@ def create_app(data_path: str = "/predictcr_data"):
         name = form_as_dict.get("name", "")
         tumor_type = form_as_dict.get("tumor_type", "")
         source = form_as_dict.get("source", "")
-        infile = request.files.get("file")
+        h5_file = request.files.get("h5_file")
+        csv_file = request.files.get("csv_file")
         logger.info(f"Adding sample {name} from {email}")
         new_sample, error_message = add_new_sample(
-            email, name, tumor_type, source, infile
+            email, name, tumor_type, source, h5_file, csv_file
         )
         if new_sample is not None:
             logger.info("  - > success")

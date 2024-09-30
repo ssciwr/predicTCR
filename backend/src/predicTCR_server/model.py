@@ -50,8 +50,11 @@ class Sample(db.Model):
         data_path = flask.current_app.config["PREDICTCR_DATA_PATH"]
         return pathlib.Path(f"{data_path}/{self.id}")
 
-    def input_file_path(self) -> pathlib.Path:
-        return self._base_path() / "input.zip"
+    def input_h5_file_path(self) -> pathlib.Path:
+        return self._base_path() / "input.h5"
+
+    def input_csv_file_path(self) -> pathlib.Path:
+        return self._base_path() / "input.csv"
 
     def result_file_path(self) -> pathlib.Path:
         return self._base_path() / "result.zip"
@@ -110,6 +113,7 @@ def get_samples(email: str | None = None) -> list[Sample]:
 
 
 def request_job() -> int | None:
+    # todo: go through running jobs and reset to queued if they have been running for more than e.g. 2 hrs
     selected_samples = (
         db.select(Sample)
         .filter(Sample.status == Status.QUEUED)
@@ -288,6 +292,7 @@ def enable_user(email: str, enabled: bool) -> tuple[str, int]:
     if user is None:
         logger.info(f"  -> Unknown email address '{email}'")
         return f"Unknown email address {email}", 400
+    user.activated = True
     user.enabled = enabled
     db.session.commit()
     return f"Account {email} activated", 200
@@ -345,7 +350,8 @@ def add_new_sample(
     name: str,
     tumor_type: str,
     source: str,
-    input_file: FileStorage,
+    h5_file: FileStorage,
+    csv_file: FileStorage,
 ) -> tuple[Sample | None, str]:
     user = db.session.execute(
         db.select(User).filter(User.email == email)
@@ -378,6 +384,7 @@ def add_new_sample(
     )
     db.session.add(new_sample)
     db.session.commit()
-    new_sample.input_file_path().parent.mkdir(parents=True, exist_ok=True)
-    input_file.save(new_sample.input_file_path())
+    new_sample.input_h5_file_path().parent.mkdir(parents=True, exist_ok=True)
+    h5_file.save(new_sample.input_h5_file_path())
+    csv_file.save(new_sample.input_csv_file_path())
     return new_sample, ""

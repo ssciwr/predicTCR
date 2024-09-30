@@ -14,6 +14,8 @@ RUN pnpm install
 
 COPY . .
 
+RUN echo "VITE_REST_API_LOCATION=/api" > .env
+
 RUN pnpm run build-only
 
 FROM nginx

@@ -7,32 +7,72 @@ import type { Sample } from "@/utils/types";
 
 const tumor_types = ["lung", "breast", "other"];
 const sources = ["TIL", "PBMC", "other"];
+const required_columns = ["barcode", "cdr3", "chain"];
 
 const sample_name = ref("");
 const tumor_type = ref("lung");
 const source = ref("TIL");
-const selected_files = ref(null as null | FileList);
-const file_input_key = ref(0);
+const selected_h5_file = ref(null as null | File);
+const h5_file_input_key = ref(0);
+const selected_csv_file = ref(null as null | File);
+const csv_file_input_key = ref(0);
 const new_sample_error_message = ref("");
 
-function on_file_changed(event: Event) {
-  const max_upload_size_mb = 20;
-  let total_upload_size_bytes = 0;
+function on_h5_file_changed(event: Event) {
+  const max_upload_size_mb = 50;
   const target = event.target as HTMLInputElement;
   if (target.files != null && target.files.length > 0) {
-    selected_files.value = target.files;
-    for (const selected_file of target.files) {
-      total_upload_size_bytes += selected_file.size;
-    }
-    if (total_upload_size_bytes > 1024 * 1024 * max_upload_size_mb) {
-      selected_files.value = null;
-      file_input_key.value++;
+    selected_h5_file.value = target.files[0];
+    if (selected_h5_file.value.size > 1024 * 1024 * max_upload_size_mb) {
+      selected_h5_file.value = null;
+      h5_file_input_key.value++;
       window.alert(
-        `Selected files exceed maximum upload size of ${max_upload_size_mb}MB`,
+        `Provided h5 file exceeds maximum allowed upload size of ${max_upload_size_mb}MB`,
       );
     }
   } else {
-    selected_files.value = null;
+    selected_h5_file.value = null;
+  }
+}
+
+async function validate_csv_file(file: File) {
+  const blob = file as Blob;
+  const text = await blob.text();
+  const lines = text.split(/\n/);
+  if (lines.length >= 1) {
+    const columns = lines[0].split(/,/);
+    console.log(columns);
+    for (const required_column of required_columns) {
+      if (!columns.includes(required_column)) {
+        console.log(`Missing header: ${required_column}`);
+        return false;
+      }
+    }
+    return true;
+  }
+  return false;
+}
+
+async function on_csv_file_changed(event: Event) {
+  const max_upload_size_mb = 10;
+  const target = event.target as HTMLInputElement;
+  if (target.files != null && target.files.length > 0) {
+    selected_csv_file.value = target.files[0];
+    if (selected_csv_file.value.size > 1024 * 1024 * max_upload_size_mb) {
+      selected_csv_file.value = null;
+      csv_file_input_key.value++;
+      window.alert(
+        `Provided csv file exceeds maximum allowed upload size of ${max_upload_size_mb}MB`,
+      );
+    } else if (!(await validate_csv_file(selected_csv_file.value as File))) {
+      selected_csv_file.value = null;
+      csv_file_input_key.value++;
+      window.alert(
+        `Provided csv file doesn't contain the required columns ${required_columns}`,
+      );
+    }
+  } else {
+    selected_csv_file.value = null;
   }
 }
 
@@ -56,11 +96,8 @@ function add_sample() {
   formData.append("name", sample_name.value);
   formData.append("tumor_type", tumor_type.value);
   formData.append("source", source.value);
-  if (selected_files.value !== null) {
-    for (const file of selected_files.value) {
-      formData.append("file", file);
-    }
-  }
+  formData.append("h5_file", selected_h5_file.value as File);
+  formData.append("csv_file", selected_csv_file.value as File);
   apiClient
     .post("sample", formData, {
       headers: {
@@ -78,8 +115,10 @@ function add_sample() {
       new_sample_error_message.value = error.response.data.message;
     });
   sample_name.value = "";
-  selected_files.value = null;
-  file_input_key.value++;
+  selected_h5_file.value = null;
+  h5_file_input_key.value++;
+  selected_csv_file.value = null;
+  csv_file_input_key.value++;
 }
 </script>
 
@@ -114,21 +153,39 @@ function add_sample() {
           </select>
         </p>
         <p>
-          <label for="input_file">Input file:</label>
+          <label for="input_h5_file">H5 input file:</label>
           <input
             type="file"
-            id="input_file"
-            name="file"
-            :multiple="true"
-            @change="on_file_changed($event)"
-            :key="file_input_key"
-            title="Upload the input file"
+            id="input_h5_file"
+            name="h5 file"
+            :multiple="false"
+            @change="on_h5_file_changed($event)"
+            :key="h5_file_input_key"
+            accept=".h5,.he5,.hdf5"
+            title="Select the h5 file to upload"
+          />
+        </p>
+        <p>
+          <label for="input_csv_file">CSV input file:</label>
+          <input
+            type="file"
+            id="input_csv_file"
+            name="csv file"
+            :multiple="false"
+            @change="on_csv_file_changed($event)"
+            :key="csv_file_input_key"
+            accept=".csv,.txt"
+            title="Select the csv file to upload"
           />
         </p>
         <p>
           <input
             type="submit"
-            :disabled="selected_files === null || sample_name.length === 0"
+            :disabled="
+              selected_h5_file === null ||
+              selected_csv_file === null ||
+              sample_name.length === 0
+            "
           />
         </p>
         <div class="error-message">

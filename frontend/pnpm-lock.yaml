@@ -13,9 +13,6 @@ importers:
       bootstrap-icons:
         specifier: ^1.11.3
         version: 1.11.3
-      jsbarcode:
-        specifier: ^3.11.6
-        version: 3.11.6
       pinia:
         specifier: ^2.2.2
         version: 2.2.2(typescript@5.5.4)(vue@3.4.38(typescript@5.5.4))
@@ -2798,12 +2795,6 @@ packages:
         integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==,
       }
     hasBin: true
-
-  jsbarcode@3.11.6:
-    resolution:
-      {
-        integrity: sha512-G5TKGyKY1zJo0ZQKFM1IIMfy0nF2rs92BLlCz+cU4/TazIc4ZH+X1GYeDRt7TKjrYqmPfTjwTBkU/QnQlsYiuA==,
-      }
 
   jsdom@24.1.1:
     resolution:
@@ -6242,8 +6233,6 @@ snapshots:
   js-yaml@4.1.0:
     dependencies:
       argparse: 2.0.1
-
-  jsbarcode@3.11.6: {}
 
   jsdom@24.1.1:
     dependencies:

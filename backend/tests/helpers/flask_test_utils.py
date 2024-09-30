@@ -1,8 +1,6 @@
 import argon2
 from predicTCR_server.model import User, Sample, db, Status
 import pathlib
-import shutil
-import tempfile
 
 
 def add_test_users(app):
@@ -42,10 +40,9 @@ def add_test_samples(app, data_path: pathlib.Path):
         ):
             ref_dir = data_path / f"{sample_id}"
             ref_dir.mkdir(parents=True, exist_ok=True)
-            with tempfile.TemporaryDirectory() as tmp_dir:
-                with open(f"{tmp_dir}/test.txt", "w") as f:
-                    f.write(name)
-                shutil.make_archive(f"{ref_dir}/input", "zip", tmp_dir)
+            for input_file_type in ["h5", "csv"]:
+                with open(f"{ref_dir}/input.{input_file_type}", "w") as f:
+                    f.write(input_file_type)
             new_sample = Sample(
                 email="user@abc.xy",
                 name=name,
