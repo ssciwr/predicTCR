@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "predicTCR_runner"
+description = "predicTCR runner"
+readme = "README.md"
+maintainers = [{ name = "Liam Keegan", email = "ssc@iwr.uni-heidelberg.de" }]
+dynamic = ["version"]
+requires-python = ">=3.10"
+license = { text = "MIT" }
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+  "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+  "requests",
+  "click",
+]
+
+[project.scripts]
+predicTCR_runner = "predicTCR_runner.main:main"
+
+[project.optional-dependencies]
+tests = ["pytest",  "requests-mock", ]
+
+[tool.setuptools.dynamic]
+version = { attr = "predicTCR_runner.__version__" }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

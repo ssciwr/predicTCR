@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Dict
 import io
-import zipfile
+import pytest
 import pathlib
 import predicTCR_server
 import flask_test_utils as ftu
@@ -129,17 +129,18 @@ def test_samples_valid(client):
     assert len(response.json) == 4
 
 
-def test_input_file_invalid(client):
+@pytest.mark.parametrize("input_file_type", ["h5", "csv"])
+def test_input_file_invalid(client, input_file_type: str):
     # no auth header
     response = client.post(
-        "/api/input_file",
+        f"/api/input_{input_file_type}_file",
         json={"sample_id": 2},
     )
     assert response.status_code == 401
     # invalid sample id
     headers = _get_auth_headers(client)
     response = client.post(
-        "/api/input_file",
+        f"/api/input_{input_file_type}_file",
         json={"sample_id": 66},
         headers=headers,
     )
@@ -147,18 +148,17 @@ def test_input_file_invalid(client):
     assert "not found" in response.json["message"]
 
 
-def test_input_file_valid(client):
+@pytest.mark.parametrize("input_file_type", ["h5", "csv"])
+def test_input_file_valid(client, input_file_type: str):
     headers = _get_auth_headers(client)
     response = client.post(
-        "/api/input_file",
+        f"/api/input_{input_file_type}_file",
         json={"sample_id": 2},
         headers=headers,
     )
     assert response.status_code == 200
-    zip_file = zipfile.ZipFile(io.BytesIO(response.data))
-    filenames = [f.filename for f in zip_file.filelist]
-    assert len(filenames) == 1
-    assert "test.txt" in filenames
+    with io.BytesIO(response.data) as f:
+        assert input_file_type in f.read().decode("utf-8")
 
 
 def test_result_invalid(client):
@@ -222,14 +222,15 @@ def test_admin_runner_token_invalid(client):
     assert response.status_code == 400
 
 
-def test_admin_runner_token_valid(client):
+@pytest.mark.parametrize("input_file_type", ["h5", "csv"])
+def test_admin_runner_token_valid(client, input_file_type: str):
     headers = _get_auth_headers(client, "admin@abc.xy", "admin")
     response = client.get("/api/admin/runner_token", headers=headers)
     assert response.status_code == 200
     new_token = response.json["access_token"]
     assert (
         client.post(
-            "/api/input_file",
+            f"/api/input_{input_file_type}_file",
             json={"sample_id": 1},
             headers={"Authorization": f"Bearer {new_token}"},
         ).status_code

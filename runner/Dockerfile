@@ -12,8 +12,12 @@ RUN micromamba install -y -n base -f /tmp/env.yaml && \
 
 WORKDIR /app
 
-COPY runner.py /app/runner.py
+COPY --chown=$MAMBA_USER:$MAMBA_USER . .
 
-COPY scripts /app/scripts
+ARG MAMBA_DOCKERFILE_ACTIVATE=1
 
-CMD ["python", "runner.py"]
+RUN ls
+
+RUN python -m pip install .
+
+CMD ["predicTCR_runner"]

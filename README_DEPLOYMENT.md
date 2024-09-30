@@ -6,7 +6,7 @@ Some information on how to deploy the website.
 
 Production docker container images are automatically built by CI.
 To deploy the latest version on a virtual machine with docker compose installed,
-download [docker compose.yml](https://raw.githubusercontent.com/ssciwr/predicTCR/main/docker compose.yml), then do
+download [docker-compose.yml](https://raw.githubusercontent.com/ssciwr/predicTCR/main/docker-compose.yml), then do
 
 ```
 sudo docker compose pull
@@ -16,7 +16,7 @@ sudo docker compose up -d
 The location of data directory, SSL keys and secret key should be set
 either in env vars or in a file `.env` in the same location as the docker compose.yml.
 
-For example the current deployment on heicloud looks like this:
+For example the current test deployment on heicloud looks like this:
 
 ```
 PREDICTCR_DATA="/home/ubuntu/predicTCR/docker_volume"

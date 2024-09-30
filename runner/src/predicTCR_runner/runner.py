@@ -3,12 +3,9 @@ from __future__ import annotations
 import requests
 import time
 import logging
-import click
 import os
 import tempfile
 import shutil
-import zipfile
-import io
 import subprocess
 
 
@@ -78,25 +75,28 @@ class Runner:
 
     def _run_job(self, sample_id: int):
         self.logger.info(f"Starting job for sample id {sample_id}...")
-        self.logger.debug("Downloading input file...")
-        response = requests.post(
-            url=f"{self.api_url}/input_file",
-            json={"sample_id": sample_id},
-            headers=self.auth_header,
-            timeout=30,
-        )
-        if response.status_code != 200:
-            self.logger.error(f"Failed to download input file: {response.content}")
-            return self._report_job_failed(
-                sample_id, f"Failed to download input file on {self.runner_hostname}"
-            )
+        self.logger.debug("Downloading input files...")
         with tempfile.TemporaryDirectory(delete=False) as tmpdir:
-            try:
-                zip_file = zipfile.ZipFile(io.BytesIO(response.content))
-                self.logger.debug(
-                    f"  - extracting {zip_file.namelist()} to {tmpdir}..."
+            for input_file_type in ["h5", "csv"]:
+                response = requests.post(
+                    url=f"{self.api_url}/{input_file_type}_input_file",
+                    json={"sample_id": sample_id},
+                    headers=self.auth_header,
+                    timeout=30,
                 )
-                zip_file.extractall(tmpdir)
+                if response.status_code != 200:
+                    self.logger.error(
+                        f"Failed to download {input_file_type}: {response.content}"
+                    )
+                    return self._report_job_failed(
+                        sample_id,
+                        f"Failed to download {input_file_type} on {self.runner_hostname}",
+                    )
+                input_file_name = f"input.{input_file_type}"
+                self.logger.debug(f"  - writing {input_file_name} to {tmpdir}...")
+                with open(f"{tmpdir}/{input_file_name}", "wb") as input_file:
+                    input_file.write(response.content)
+            try:
                 self.logger.debug(
                     f"  - copying contents of scripts folder to {tmpdir}..."
                 )
@@ -121,29 +121,3 @@ class Runner:
                 self._run_job(job_id)
             else:
                 time.sleep(self.poll_interval)
-
-
-@click.command()
-@click.option("--api-url", type=str)
-@click.option("--jwt-token", type=str)
-@click.option("--poll-interval", type=int, default=5, show_default=True)
-@click.option(
-    "--log-level",
-    default="INFO",
-    type=click.Choice(
-        ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"], case_sensitive=False
-    ),
-    help="Log level",
-    show_default=True,
-    show_choices=True,
-)
-def main(api_url, jwt_token, poll_interval, log_level):
-    logging.basicConfig(
-        level=log_level, format="%(levelname)s %(module)s.%(funcName)s :: %(message)s"
-    )
-    runner = Runner(api_url, jwt_token, poll_interval)
-    runner.start()
-
-
-if __name__ == "__main__":
-    main(auto_envvar_prefix="PREDICTCR")

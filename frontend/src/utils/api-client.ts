@@ -3,7 +3,7 @@ import router from "@/router";
 import type { AxiosInstance } from "axios";
 import { useUserStore } from "@/stores/user";
 
-const apiClient: AxiosInstance = axios.create({
+export const apiClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_REST_API_LOCATION,
   headers: {
     "Content-type": "application/json",
@@ -23,9 +23,6 @@ function download_file_from_endpoint(
 ) {
   apiClient
     .post(endpoint, json, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
       responseType: "blob",
     })
     .then((response) => {
@@ -43,27 +40,36 @@ function download_file_from_endpoint(
     });
 }
 
-function download_input_file(sample_id: number) {
+export function download_input_h5_file(sample_id: number, sample_name: string) {
   download_file_from_endpoint(
-    "input_file",
+    "input_h5_file",
     { sample_id: sample_id },
-    `${sample_id}_input_file.zip`,
+    `${sample_name}.h5`,
   );
 }
 
-function download_result(sample_id: number) {
+export function download_input_csv_file(
+  sample_id: number,
+  sample_name: string,
+) {
+  download_file_from_endpoint(
+    "input_csv_file",
+    { sample_id: sample_id },
+    `${sample_name}.csv`,
+  );
+}
+
+export function download_result(sample_id: number, sample_name: string) {
   download_file_from_endpoint(
     "result",
     { sample_id: sample_id },
-    `${sample_id}.zip`,
+    `${sample_name}.zip`,
   );
 }
 
-function logout() {
+export function logout() {
   const user = useUserStore();
   user.user = null;
   user.token = "";
   router.push({ name: "login" });
 }
-
-export { apiClient, logout, download_input_file, download_result };
