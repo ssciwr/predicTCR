@@ -27,14 +27,15 @@ PREDICTCR_RUNNERS=4
 PREDICTCR_POLL_INTERVAL=5
 ```
 
-With this .env file, `docker compose up -d` will start 4 runner images in the background, which poll the web service for new jobs every 5 seconds.
+With this .env file, `docker compose up -d` will start 4 runner images in the background,
+which poll the web service for new jobs every 5 seconds.
 
 ## Development
 
 To test locally using Docker, you can directly talk to the backend service (this works because both docker-compose files use the same docker network)
 
 ```
-PREDICTCR_API_URL="http://backend:8080/api"
-PREDICTCR_JWT_TOKEN="" # you need to generate this using the admin page of your local instance
-PREDICTCR_LOG_LEVEL=DEBUG
+PREDICTCR_RUNNER_API_URL="http://backend:8080/api"
+PREDICTCR_RUNNER_JWT_TOKEN="" # you need to generate this using the admin page of your local instance
+PREDICTCR_RUNNER_LOG_LEVEL=DEBUG
 ```

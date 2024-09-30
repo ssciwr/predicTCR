@@ -25,7 +25,7 @@ from predicTCR_server.utils import (
 
 db = SQLAlchemy()
 ph = argon2.PasswordHasher()
-logger = get_logger("predicTCRServer")
+logger = get_logger()
 
 
 class Status(str, Enum):

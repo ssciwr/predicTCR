@@ -11,7 +11,7 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import current_user
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
-from flask_cors import CORS
+from flask_cors import cross_origin
 from predicTCR_server.logger import get_logger
 from predicTCR_server.model import (
     db,
@@ -31,7 +31,7 @@ from predicTCR_server.model import (
 
 
 def create_app(data_path: str = "/predictcr_data"):
-    logger = get_logger("predicTCRServer")
+    logger = get_logger()
     app = Flask("predicTCRServer")
     jwt_secret_key = os.environ.get("JWT_SECRET_KEY")
     if jwt_secret_key is not None and len(jwt_secret_key) > 16:
@@ -50,8 +50,6 @@ def create_app(data_path: str = "/predictcr_data"):
     # limit max file upload size to 100mb
     app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024
     app.config["PREDICTCR_DATA_PATH"] = data_path
-
-    CORS(app)
 
     jwt = JWTManager(app)
     db.init_app(app)
@@ -279,6 +277,7 @@ def create_app(data_path: str = "/predictcr_data"):
         return jsonify(access_token=access_token)
 
     @app.route("/api/runner/request_job", methods=["POST"])
+    @cross_origin()
     @jwt_required()
     def runner_request_job():
         if not current_user.is_runner:
@@ -291,6 +290,7 @@ def create_app(data_path: str = "/predictcr_data"):
         return {"sample_id": sample_id}
 
     @app.route("/api/runner/result", methods=["POST"])
+    @cross_origin()
     @jwt_required()
     def runner_result():
         if not current_user.is_runner:

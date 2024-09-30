@@ -34,7 +34,7 @@ sudo docker compose logs
 
 ### SSL certificate
 
-To generate initial SSL certificates for domain `domain.com` on the VM:
+To generate SSL certificates for domain `domain.com` from [Let's Encrypt](https://letsencrypt.org/) using [Certbot](https://certbot.eff.org/):
 
 ```
 sudo docker run -it --rm --name certbot -v "/etc/letsencrypt:/etc/letsencrypt" -v "/var/lib/letsencrypt:/var/lib/letsencrypt" -p80:80 -p443:443 certbot/certbot certonly -d domain.com
