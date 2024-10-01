@@ -1,12 +1,33 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import ListItem from "@/components/ListItem.vue";
 import SamplesTable from "@/components/SamplesTable.vue";
 import { apiClient, logout } from "@/utils/api-client";
 import type { Sample } from "@/utils/types";
+import {
+  FwbButton,
+  FwbSelect,
+  FwbFileInput,
+  FwbInput,
+  FwbTimeline,
+  FwbTimelineBody,
+  FwbTimelineContent,
+  FwbTimelineItem,
+  FwbTimelinePoint,
+  FwbTimelineTitle,
+  FwbAlert,
+  FwbModal,
+} from "flowbite-vue";
 
-const tumor_types = ["lung", "breast", "other"];
-const sources = ["TIL", "PBMC", "other"];
+const tumor_types = [
+  { value: "lung", name: "lung" },
+  { value: "breast", name: "breast" },
+  { value: "other", name: "other" },
+];
+const sources = [
+  { value: "TIL", name: "TIL" },
+  { value: "PBMC", name: "PMBC" },
+  { value: "other", name: "other" },
+];
 const required_columns = ["barcode", "cdr3", "chain"];
 
 const sample_name = ref("");
@@ -124,85 +145,93 @@ function add_sample() {
 
 <template>
   <main>
-    <ListItem title="Submit a sample" icon="bi-clipboard-plus">
-      <p>To submit a new sample:</p>
-      <form @submit.prevent="add_sample">
-        <p>
-          <label for="sample_name">Sample name:</label>
-          <input
-            v-model="sample_name"
-            id="sample_name"
-            placeholder="pXYZ_ABC_c1"
-            maxlength="128"
-          />
-        </p>
-        <p>
-          <label for="tumor_type">Tumor type:</label>
-          <select v-model="tumor_type" id="tumor_type">
-            <option v-for="tumor_type in tumor_types">
-              {{ tumor_type }}
-            </option>
-          </select>
-        </p>
-        <p>
-          <label for="source">Source:</label>
-          <select v-model="source" id="source">
-            <option v-for="source in sources">
-              {{ source }}
-            </option>
-          </select>
-        </p>
-        <p>
-          <label for="input_h5_file">H5 input file:</label>
-          <input
-            type="file"
-            id="input_h5_file"
-            name="h5 file"
-            :multiple="false"
-            @change="on_h5_file_changed($event)"
-            :key="h5_file_input_key"
-            accept=".h5,.he5,.hdf5"
-            title="Select the h5 file to upload"
-          />
-        </p>
-        <p>
-          <label for="input_csv_file">CSV input file:</label>
-          <input
-            type="file"
-            id="input_csv_file"
-            name="csv file"
-            :multiple="false"
-            @change="on_csv_file_changed($event)"
-            :key="csv_file_input_key"
-            accept=".csv,.txt"
-            title="Select the csv file to upload"
-          />
-        </p>
-        <p>
-          <input
-            type="submit"
-            :disabled="
-              selected_h5_file === null ||
-              selected_csv_file === null ||
-              sample_name.length === 0
-            "
-          />
-        </p>
-        <div class="error-message">
-          <template v-if="new_sample_error_message">
-            {{ new_sample_error_message }}
-          </template>
-        </div>
-      </form>
-    </ListItem>
-    <ListItem title="My samples" icon="bi-clipboard-data">
-      <template v-if="samples.length > 0">
-        <p>Your samples:</p>
-        <SamplesTable :samples="samples" :admin="false"></SamplesTable>
-      </template>
-      <template v-else>
-        <p>You don't yet have any samples.</p>
-      </template>
-    </ListItem>
+    <fwb-timeline>
+      <fwb-timeline-item>
+        <fwb-timeline-point>
+          <img src="/logo.png" />
+        </fwb-timeline-point>
+        <fwb-timeline-content>
+          <fwb-timeline-title>Submit a sample</fwb-timeline-title>
+          <fwb-timeline-body>
+            <div class="flex flex-col mt-2">
+              <fwb-input
+                v-model="sample_name"
+                required
+                label="Sample name"
+                id="sample_name"
+                placeholder="pXYZ_ABC_c1"
+                maxlength="128"
+                class="mb-2"
+              />
+              <fwb-select
+                v-model="tumor_type"
+                :options="tumor_types"
+                id="tumor_type"
+                label="Tumor type"
+                class="mb-2"
+              />
+              <fwb-select
+                v-model="source"
+                :options="sources"
+                id="source"
+                label="Source"
+                class="mb-2"
+              />
+              <fwb-file-input
+                type="file"
+                id="input_h5_file"
+                label="H5 input file"
+                name="h5 file"
+                @change="on_h5_file_changed($event)"
+                :key="h5_file_input_key"
+                accept=".h5,.he5,.hdf5"
+                title="Select the h5 file to upload"
+                class="mb-2"
+              />
+              <fwb-file-input
+                type="file"
+                id="input_csv_file"
+                label="CSV input file"
+                name="csv file"
+                @change="on_csv_file_changed($event)"
+                :key="csv_file_input_key"
+                accept=".csv,.txt"
+                title="Select the csv file to upload"
+                class="mb-2"
+              />
+              <fwb-button
+                @click="add_sample"
+                :disabled="
+                  selected_h5_file === null ||
+                  selected_csv_file === null ||
+                  sample_name.length === 0
+                "
+                >Submit
+              </fwb-button>
+              <fwb-alert type="danger" v-if="new_sample_error_message">
+                {{ new_sample_error_message }}
+              </fwb-alert>
+            </div>
+          </fwb-timeline-body>
+        </fwb-timeline-content>
+      </fwb-timeline-item>
+      <fwb-timeline-item>
+        <fwb-timeline-point>
+          <img src="/logo.png" />
+        </fwb-timeline-point>
+        <fwb-timeline-content>
+          <fwb-timeline-title>My samples</fwb-timeline-title>
+          <fwb-timeline-body>
+            <template v-if="samples.length > 0">
+              <p>Your samples:</p>
+              <SamplesTable :samples="samples" :admin="false"></SamplesTable>
+            </template>
+            <template v-else>
+              <p>You don't yet have any samples.</p>
+            </template>
+          </fwb-timeline-body>
+        </fwb-timeline-content>
+      </fwb-timeline-item>
+    </fwb-timeline>
   </main>
 </template>

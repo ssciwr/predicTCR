@@ -71,5 +71,4 @@ export function logout() {
   const user = useUserStore();
   user.user = null;
   user.token = "";
-  router.push({ name: "login" });
 }

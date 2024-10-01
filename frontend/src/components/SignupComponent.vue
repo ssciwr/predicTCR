@@ -2,7 +2,7 @@
 import { ref, computed } from "vue";
 import { apiClient } from "@/utils/api-client";
 import { validate_email, validate_password } from "@/utils/validation";
-import ListItem from "@/components/ListItem.vue";
+import { FwbInput, FwbButton, FwbAlert } from "flowbite-vue";
 const signup_email_address = ref("");
 const signup_email_address_message = computed(() => {
   if (validate_email(signup_email_address.value)) {
@@ -37,56 +37,59 @@ function do_signup() {
 </script>
 
 <template>
-  <ListItem title="Sign up" icon="bi-person-plus">
+  <div>
     <p>
       If you don't yet have an account, you can create one by entering a valid
       email address and choosing a password. Your account will then need to be
       manually activated by an administrator before you are able to log in:
     </p>
-    <form @submit.prevent="do_signup">
-      <div>
-        <label for="signup_email">Email:</label>
-        <input
-          v-model="signup_email_address"
-          id="signup_email"
-          placeholder="your.name@domain.com"
-          :title="signup_email_address_message"
-          maxlength="256"
-          autocomplete="username"
-        />
-        <span class="error-message pad-left">{{
-          signup_email_address_message
-        }}</span>
-      </div>
-      <p>
-        <label for="signup_password">Password:</label>
-        <input
-          v-model="signup_password"
-          id="signup_password"
-          type="password"
-          placeholder="password"
-          :title="signup_password_message"
-          maxlength="256"
-          autocomplete="new-password"
-        />
-        <span class="error-message pad-left">{{
-          signup_password_message
-        }}</span>
-      </p>
-      <p>
-        <input
-          type="submit"
-          :title="signup_email_address_message + ' ' + signup_password_message"
-          :disabled="
-            signup_email_address_message.length +
-              signup_password_message.length >
-            0
-          "
-        />
-      </p>
-    </form>
-    <div class="message">
-      {{ signup_response_message }}
+    <div class="mt-4">
+      <fwb-input
+        v-model="signup_email_address"
+        required
+        id="signup_email"
+        placeholder=""
+        maxlength="256"
+        autocomplete="username"
+        label="Email"
+        class="mb-2"
+        :validation-status="
+          signup_email_address_message.length > 0 ? 'error' : 'success'
+        "
+      >
+        <template #validationMessage>
+          {{ signup_email_address_message }}
+        </template>
+      </fwb-input>
+      <fwb-input
+        v-model="signup_password"
+        required
+        id="signup_password"
+        type="password"
+        label="Password"
+        placeholder=""
+        maxlength="256"
+        class="mb-2"
+        :validation-status="
+          signup_password_message.length > 0 ? 'error' : 'success'
+        "
+      >
+        <template #validationMessage>
+          {{ signup_password_message }}
+        </template>
+      </fwb-input>
+      <fwb-button
+        @click="do_signup"
+        class="mb-2"
+        :disabled="
+          signup_email_address_message.length + signup_password_message.length >
+          0
+        "
+        >Sign up</fwb-button
+      >
+      <fwb-alert type="info" v-if="signup_response_message.length > 0">
+        {{ signup_response_message }}
+      </fwb-alert>
     </div>
-  </ListItem>
+  </div>
 </template>

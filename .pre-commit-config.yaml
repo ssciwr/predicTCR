@@ -13,7 +13,6 @@ repos:
     hooks:
       - id: check-yaml
       - id: trailing-whitespace
-      - id: check-added-large-files
       - id: check-toml
       - id: end-of-file-fixer
 

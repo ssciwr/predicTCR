@@ -30,9 +30,9 @@ apiClient
 
 <template>
   <main>
-    <ListItem :title="title" :icon="icon">
+    <ListItem :title="title">
       <p>{{ message }}</p>
-      <p>Go to <RouterLink to="/login">login / signup</RouterLink> page.</p>
+      <p>Go to <RouterLink to="/login">login</RouterLink> page.</p>
     </ListItem>
   </main>
 </template>
