@@ -38,7 +38,7 @@ function openModalSignup() {
       header-classes="text-slate-100"
       sub-text="Prediction of tumor-reactive T cell receptors from scRNA-seq data for personalized T cell therapy."
       sub-text-classes="text-slate-300"
-      class="mb-4 bg-slate-800 bg-[url('/logo.png')] bg-no-repeat bg-center bg-cover md:rounded-lg"
+      class="mb-4 bg-slate-800 bg-splash bg-no-repeat bg-center bg-cover md:rounded-lg"
     >
       <div class="flex flex-row justify-center">
         <fwb-button

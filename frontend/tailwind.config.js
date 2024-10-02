@@ -11,7 +11,7 @@ export default {
   theme: {
     extend: {
       backgroundImage: {
-        "predictcr-logo": "url('http://localhost:5173/logo.png')",
+        splash: "url('/splash.jpg')",
       },
     },
   },

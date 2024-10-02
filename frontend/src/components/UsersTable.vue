@@ -11,13 +11,18 @@ import {
 } from "flowbite-vue";
 import type { User } from "@/utils/types";
 import { apiClient, logout } from "@/utils/api-client";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
-defineProps<{
-  runner: boolean;
+const props = defineProps<{
+  is_runner: boolean;
 }>();
 
 const users = ref([] as User[]);
+const filtered_users = computed(() => {
+  return users.value.filter((user) => {
+    return user.is_runner === props.is_runner;
+  });
+});
 
 function get_users() {
   apiClient
@@ -71,22 +76,21 @@ function disable_user(user_email: string) {
       <fwb-table-head-cell>Email</fwb-table-head-cell>
       <fwb-table-head-cell>Activated</fwb-table-head-cell>
       <fwb-table-head-cell>Enabled</fwb-table-head-cell>
-      <fwb-table-head-cell>Remaining quota</fwb-table-head-cell>
+      <fwb-table-head-cell>Quota</fwb-table-head-cell>
       <fwb-table-head-cell>Last submission</fwb-table-head-cell>
       <fwb-table-head-cell>Admin</fwb-table-head-cell>
-      <fwb-table-head-cell>Runner</fwb-table-head-cell>
       <fwb-table-head-cell>Enable/disable</fwb-table-head-cell>
     </fwb-table-head>
     <fwb-table-body>
       <fwb-table-row
-        v-for="user in users"
+        v-for="user in filtered_users"
         :key="user.id"
-        :class="{ disabled: !user.enabled }"
+        :class="user.enabled ? '!bg-slate-50' : '!bg-red-200'"
       >
         <fwb-table-cell>{{ user.id }}</fwb-table-cell>
         <fwb-table-cell>{{ user.email }}</fwb-table-cell>
-        <fwb-table-cell>{{ user.activated }}</fwb-table-cell>
-        <fwb-table-cell>{{ user.enabled }}</fwb-table-cell>
+        <fwb-table-cell>{{ user.activated ? "✓" : "✗" }}</fwb-table-cell>
+        <fwb-table-cell>{{ user.enabled ? "✓" : "✗" }}</fwb-table-cell>
         <fwb-table-cell>{{ user.quota }}</fwb-table-cell>
         <fwb-table-cell>
           {{
@@ -95,8 +99,7 @@ function disable_user(user_email: string) {
             )
           }}
         </fwb-table-cell>
-        <fwb-table-cell>{{ user.is_admin }}</fwb-table-cell>
-        <fwb-table-cell>{{ user.is_runner }}</fwb-table-cell>
+        <fwb-table-cell>{{ user.is_admin ? "✓" : "✗" }}</fwb-table-cell>
         <fwb-table-cell>
           <template v-if="user.enabled">
             <fwb-button @click="disable_user(user.email)" color="red"
