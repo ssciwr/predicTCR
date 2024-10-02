@@ -27,6 +27,7 @@ from predicTCR_server.model import (
     send_password_reset_email,
     request_job,
     process_result,
+    get_user_if_allowed_to_submit,
 )
 
 
@@ -206,6 +207,12 @@ def create_app(data_path: str = "/predictcr_data"):
             return jsonify(message="Results file not found"), 400
         logger.info(f"Returning file {requested_file}")
         return flask.send_file(requested_file, as_attachment=True)
+
+    @app.route("/api/user_submit_message", methods=["GET"])
+    @jwt_required()
+    def user_submit_message():
+        user, message = get_user_if_allowed_to_submit(current_user.email)
+        return jsonify(message=message)
 
     @app.route("/api/sample", methods=["POST"])
     @jwt_required()

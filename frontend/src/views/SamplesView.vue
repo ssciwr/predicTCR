@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onUnmounted } from "vue";
 import SamplesTable from "@/components/SamplesTable.vue";
 import { apiClient, logout } from "@/utils/api-client";
 import type { Sample } from "@/utils/types";
@@ -15,7 +15,6 @@ import {
   FwbTimelinePoint,
   FwbTimelineTitle,
   FwbAlert,
-  FwbModal,
 } from "flowbite-vue";
 
 const tumor_types = [
@@ -99,18 +98,49 @@ async function on_csv_file_changed(event: Event) {
 
 const samples = ref([] as Sample[]);
 
-apiClient
-  .get("samples")
-  .then((response) => {
-    samples.value = response.data;
-    console.log(samples.value);
-  })
-  .catch((error) => {
-    if (error.response.status > 400) {
-      logout();
-    }
-    console.log(error);
-  });
+function update_samples() {
+  apiClient
+    .get("samples")
+    .then((response) => {
+      samples.value = response.data;
+      console.log(samples.value);
+    })
+    .catch((error) => {
+      if (error.response.status > 400) {
+        logout();
+      }
+      console.log(error);
+    });
+}
+
+update_samples();
+
+const submit_message = ref("");
+
+let update_submit_message_timer = setInterval(() => {
+  update_submit_message();
+}, 30000);
+
+onUnmounted(() => {
+  clearInterval(update_submit_message_timer);
+});
+
+function update_submit_message() {
+  console.log("update_submit_message");
+  apiClient
+    .get("user_submit_message")
+    .then((response) => {
+      submit_message.value = response.data.message;
+    })
+    .catch((error) => {
+      if (error.response.status > 400) {
+        logout();
+      }
+      console.log(error);
+    });
+}
+
+update_submit_message();
 
 function add_sample() {
   let formData = new FormData();
@@ -126,7 +156,8 @@ function add_sample() {
       },
     })
     .then((response) => {
-      samples.value.push(response.data.sample);
+      update_samples();
+      update_submit_message();
       new_sample_error_message.value = "";
     })
     .catch((error) => {
@@ -153,65 +184,70 @@ function add_sample() {
         <fwb-timeline-content>
           <fwb-timeline-title>Submit a sample</fwb-timeline-title>
           <fwb-timeline-body>
-            <div class="flex flex-col mt-2">
-              <fwb-input
-                v-model="sample_name"
-                required
-                label="Sample name"
-                id="sample_name"
-                placeholder="pXYZ_ABC_c1"
-                maxlength="128"
-                class="mb-2"
-              />
-              <fwb-select
-                v-model="tumor_type"
-                :options="tumor_types"
-                id="tumor_type"
-                label="Tumor type"
-                class="mb-2"
-              />
-              <fwb-select
-                v-model="source"
-                :options="sources"
-                id="source"
-                label="Source"
-                class="mb-2"
-              />
-              <fwb-file-input
-                type="file"
-                id="input_h5_file"
-                label="H5 input file"
-                name="h5 file"
-                @change="on_h5_file_changed($event)"
-                :key="h5_file_input_key"
-                accept=".h5,.he5,.hdf5"
-                title="Select the h5 file to upload"
-                class="mb-2"
-              />
-              <fwb-file-input
-                type="file"
-                id="input_csv_file"
-                label="CSV input file"
-                name="csv file"
-                @change="on_csv_file_changed($event)"
-                :key="csv_file_input_key"
-                accept=".csv,.txt"
-                title="Select the csv file to upload"
-                class="mb-2"
-              />
-              <fwb-button
-                @click="add_sample"
-                :disabled="
-                  selected_h5_file === null ||
-                  selected_csv_file === null ||
-                  sample_name.length === 0
-                "
-                >Submit
-              </fwb-button>
-              <fwb-alert type="danger" v-if="new_sample_error_message">
-                {{ new_sample_error_message }}
-              </fwb-alert>
-            </div>
+            <template v-if="submit_message.length > 0">
+              {{ submit_message }}
+            </template>
+            <template v-else>
+              <div class="flex flex-col mt-2">
+                <fwb-input
+                  v-model="sample_name"
+                  required
+                  label="Sample name"
+                  id="sample_name"
+                  placeholder="pXYZ_ABC_c1"
+                  maxlength="128"
+                  class="mb-2"
+                />
+                <fwb-select
+                  v-model="tumor_type"
+                  :options="tumor_types"
+                  id="tumor_type"
+                  label="Tumor type"
+                  class="mb-2"
+                />
+                <fwb-select
+                  v-model="source"
+                  :options="sources"
+                  id="source"
+                  label="Source"
+                  class="mb-2"
+                />
+                <fwb-file-input
+                  type="file"
+                  id="input_h5_file"
+                  label="H5 input file"
+                  name="h5 file"
+                  @change="on_h5_file_changed($event)"
+                  :key="h5_file_input_key"
+                  accept=".h5,.he5,.hdf5"
+                  title="Select the h5 file to upload"
+                  class="mb-2"
+                />
+                <fwb-file-input
+                  type="file"
+                  id="input_csv_file"
+                  label="CSV input file"
+                  name="csv file"
+                  @change="on_csv_file_changed($event)"
+                  :key="csv_file_input_key"
+                  accept=".csv,.txt"
+                  title="Select the csv file to upload"
+                  class="mb-2"
+                />
+                <fwb-button
+                  @click="add_sample"
+                  :disabled="
+                    selected_h5_file === null ||
+                    selected_csv_file === null ||
+                    sample_name.length === 0
+                  "
+                  >Submit
+                </fwb-button>
+                <fwb-alert type="danger" v-if="new_sample_error_message">
+                  {{ new_sample_error_message }}
+                </fwb-alert>
+              </div>
+            </template>
           </fwb-timeline-body>
         </fwb-timeline-content>
       </fwb-timeline-item>
@@ -223,8 +259,11 @@ function add_sample() {
           <fwb-timeline-title>My samples</fwb-timeline-title>
           <fwb-timeline-body>
             <template v-if="samples.length > 0">
-              <p>Your samples:</p>
-              <SamplesTable :samples="samples" :admin="false"></SamplesTable>
+              <SamplesTable
+                :samples="samples"
+                :admin="false"
+                class="mt-2"
+              ></SamplesTable>
             </template>
             <template v-else>
               <p>You don't yet have any samples.</p>

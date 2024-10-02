@@ -362,6 +362,32 @@ def reset_user_password(token: str, email: str, new_password: str) -> tuple[str,
     return "Password changed", 200
 
 
+def get_user_if_allowed_to_submit(email: str) -> tuple[User | None, str]:
+    logger.info(f"Checking if {email} can submit a job")
+    user = db.session.execute(
+        db.select(User).filter(User.email == email)
+    ).scalar_one_or_none()
+    if user is None:
+        return None, f"Unknown email address {email}."
+    if user.quota <= 0:
+        return None, "You have reached your sample submission quota."
+    mins_since_last_submission = (
+        timestamp_now() - user.last_submission_timestamp
+    ) // 60
+    logger.debug(
+        f"{mins_since_last_submission}mins since last submission at {user.last_submission_timestamp}"
+    )
+    wait_time_mins = user.submission_interval_minutes - mins_since_last_submission
+    logger.debug(f"Submission interval: {user.submission_interval_minutes}mins")
+    logger.debug(f"  -> wait time: {wait_time_mins}min")
+    if wait_time_mins > 0:
+        return (
+            None,
+            f"Your next sample submission is available in {wait_time_mins} minute{'s' if wait_time_mins > 1 else ''}.",
+        )
+    return user, ""
+
+
 def add_new_sample(
     email: str,
     name: str,
@@ -370,24 +396,9 @@ def add_new_sample(
     h5_file: FileStorage,
     csv_file: FileStorage,
 ) -> tuple[Sample | None, str]:
-    user = db.session.execute(
-        db.select(User).filter(User.email == email)
-    ).scalar_one_or_none()
+    user, msg = get_user_if_allowed_to_submit(email)
     if user is None:
-        return None, f"Unknown email address {email}"
-    mins_since_last_submission = (
-        timestamp_now() - user.last_submission_timestamp
-    ) // 60
-    logger.debug(
-        f"{mins_since_last_submission}mins since last submission at {user.last_submission_timestamp}"
-    )
-    wait_time_mins = predicTCR_submission_interval_minutes - mins_since_last_submission
-    logger.debug(f"Submission interval: {predicTCR_submission_interval_minutes}mins")
-    logger.debug(f"  -> wait time: {wait_time_mins}min")
-    if wait_time_mins > 0:
-        return None, f"Your next submission is available in {wait_time_mins} minutes"
-    if user.quota <= 0:
-        return None, "You have reached your submission quota"
+        return None, msg
     user.last_submission_timestamp = timestamp_now()
     user.quota -= 1
     new_sample = Sample(
