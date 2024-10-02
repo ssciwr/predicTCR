@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 [project.scripts]
-predicTCR_runner = "predicTCR_runner.main:main"
+predicTCR_runner = "predicTCR_runner.main:main_env_vars"
 
 [project.optional-dependencies]
 tests = ["pytest",  "requests-mock", ]

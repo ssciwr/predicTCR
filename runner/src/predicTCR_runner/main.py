@@ -23,9 +23,17 @@ def main(api_url, jwt_token, poll_interval, log_level):
     logging.basicConfig(
         level=log_level, format="%(levelname)s %(module)s.%(funcName)s :: %(message)s"
     )
+    logging.info("Starting predict TCR runner")
+    logging.info(f"  - api_url={api_url}")
+    logging.info(f"  - poll_interval={poll_interval}")
+    logging.info(f"  - log_level={log_level}")
     runner = Runner(api_url, jwt_token, poll_interval)
     runner.start()
 
 
-if __name__ == "__main__":
+def main_env_vars():
     main(auto_envvar_prefix="PREDICTCR")
+
+
+if __name__ == "__main__":
+    main()

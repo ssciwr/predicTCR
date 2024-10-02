@@ -2,13 +2,15 @@
 
 # This script runs the analysis and puts the output in result.zip
 
-ls
+echo "Starting fake analysis..."
 
-echo "Doing fake analysis... done."
+echo "Sleeping for 1 minute..."
 
-echo "Example output" > result.zip
+sleep 60
 
-ls
+ls > result.zip
+
+echo "done."
 
 # Rscript preprocess.R
 
