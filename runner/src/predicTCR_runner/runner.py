@@ -79,7 +79,7 @@ class Runner:
         with tempfile.TemporaryDirectory(delete=False) as tmpdir:
             for input_file_type in ["h5", "csv"]:
                 response = requests.post(
-                    url=f"{self.api_url}/{input_file_type}_input_file",
+                    url=f"{self.api_url}/input_{input_file_type}_file",
                     json={"sample_id": sample_id},
                     headers=self.auth_header,
                     timeout=30,
