@@ -39,7 +39,7 @@ defineProps<{
       <fwb-table-row v-for="sample in samples" :key="sample.id">
         <fwb-table-cell v-if="admin">{{ sample["id"] }}</fwb-table-cell>
         <fwb-table-cell>{{
-          new Date(sample["timestamp"] * 1000).toLocaleDateString()
+          new Date(sample["timestamp"] * 1000).toLocaleDateString("de-DE")
         }}</fwb-table-cell>
         <fwb-table-cell v-if="admin">{{ sample["email"] }}</fwb-table-cell>
         <fwb-table-cell>{{ sample["name"] }}</fwb-table-cell>

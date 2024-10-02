@@ -32,27 +32,29 @@ function do_login() {
 
 <template>
   <div>
-    <fwb-input
-      v-model="login_email_address"
-      required
-      id="login_email"
-      placeholder="your.name@domain.com"
-      maxlength="256"
-      autocomplete="username"
-      label="Email"
-      class="mb-2"
-    />
-    <fwb-input
-      v-model="login_password"
-      required
-      id="login_password"
-      type="password"
-      maxlength="256"
-      autocomplete="current-password"
-      label="Password"
-      class="mb-2"
-    />
-    <fwb-button @click="do_login" class="mb-2">Login</fwb-button>
+    <form @submit.prevent="do_login">
+      <fwb-input
+        v-model="login_email_address"
+        required
+        id="login_email"
+        placeholder="your.name@domain.com"
+        maxlength="256"
+        autocomplete="username"
+        label="Email"
+        class="mb-2"
+      />
+      <fwb-input
+        v-model="login_password"
+        required
+        id="login_password"
+        type="password"
+        maxlength="256"
+        autocomplete="current-password"
+        label="Password"
+        class="mb-2"
+      />
+      <fwb-button type="submit" class="mb-2">Login</fwb-button>
+    </form>
     <fwb-alert type="danger" v-if="login_error_message.length > 0">
       {{ login_error_message }}
     </fwb-alert>

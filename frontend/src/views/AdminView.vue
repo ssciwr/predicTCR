@@ -80,7 +80,7 @@ get_samples();
           <fwb-timeline-content>
             <fwb-timeline-title>Runners</fwb-timeline-title>
             <fwb-timeline-body>
-              <UsersTable :runner="true"></UsersTable>
+              <UsersTable :is_runner="true"></UsersTable>
             </fwb-timeline-body>
           </fwb-timeline-content>
         </fwb-timeline-item>
@@ -91,7 +91,7 @@ get_samples();
           <fwb-timeline-content>
             <fwb-timeline-title>Users</fwb-timeline-title>
             <fwb-timeline-body>
-              <UsersTable :runner="false"></UsersTable>
+              <UsersTable :is_runner="false"></UsersTable>
             </fwb-timeline-body>
           </fwb-timeline-content>
         </fwb-timeline-item>

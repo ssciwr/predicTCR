@@ -44,49 +44,52 @@ function do_signup() {
       manually activated by an administrator before you are able to log in:
     </p>
     <div class="mt-4">
-      <fwb-input
-        v-model="signup_email_address"
-        required
-        id="signup_email"
-        placeholder=""
-        maxlength="256"
-        autocomplete="username"
-        label="Email"
-        class="mb-2"
-        :validation-status="
-          signup_email_address_message.length > 0 ? 'error' : 'success'
-        "
-      >
-        <template #validationMessage>
-          {{ signup_email_address_message }}
-        </template>
-      </fwb-input>
-      <fwb-input
-        v-model="signup_password"
-        required
-        id="signup_password"
-        type="password"
-        label="Password"
-        placeholder=""
-        maxlength="256"
-        class="mb-2"
-        :validation-status="
-          signup_password_message.length > 0 ? 'error' : 'success'
-        "
-      >
-        <template #validationMessage>
-          {{ signup_password_message }}
-        </template>
-      </fwb-input>
-      <fwb-button
-        @click="do_signup"
-        class="mb-2"
-        :disabled="
-          signup_email_address_message.length + signup_password_message.length >
-          0
-        "
-        >Sign up</fwb-button
-      >
+      <form @submit.prevent="do_signup">
+        <fwb-input
+          v-model="signup_email_address"
+          required
+          id="signup_email"
+          placeholder=""
+          maxlength="256"
+          autocomplete="username"
+          label="Email"
+          class="mb-2"
+          :validation-status="
+            signup_email_address_message.length > 0 ? 'error' : 'success'
+          "
+        >
+          <template #validationMessage>
+            {{ signup_email_address_message }}
+          </template>
+        </fwb-input>
+        <fwb-input
+          v-model="signup_password"
+          required
+          id="signup_password"
+          type="password"
+          label="Password"
+          placeholder=""
+          maxlength="256"
+          class="mb-2"
+          :validation-status="
+            signup_password_message.length > 0 ? 'error' : 'success'
+          "
+        >
+          <template #validationMessage>
+            {{ signup_password_message }}
+          </template>
+        </fwb-input>
+        <fwb-button
+          type="submit"
+          class="mb-2"
+          :disabled="
+            signup_email_address_message.length +
+              signup_password_message.length >
+            0
+          "
+          >Sign up</fwb-button
+        >
+      </form>
       <fwb-alert type="info" v-if="signup_response_message.length > 0">
         {{ signup_response_message }}
       </fwb-alert>
