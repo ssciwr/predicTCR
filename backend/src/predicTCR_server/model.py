@@ -71,6 +71,7 @@ class User(db.Model):
     last_submission_timestamp: int = db.Column(db.Integer, nullable=False)
     is_admin: bool = db.Column(db.Boolean, nullable=False)
     is_runner: bool = db.Column(db.Boolean, nullable=False)
+    full_results: bool = db.Column(db.Boolean, nullable=False)
 
     def set_password_nocheck(self, new_password: str):
         self.password_hash = ph.hash(new_password)
@@ -102,6 +103,7 @@ class User(db.Model):
             "last_submission_timestamp": self.last_submission_timestamp,
             "is_admin": self.is_admin,
             "is_runner": self.is_runner,
+            "full_results": self.full_results,
         }
 
 
@@ -238,6 +240,7 @@ def add_new_user(email: str, password: str, is_admin: bool) -> tuple[str, int]:
                 last_submission_timestamp=0,
                 is_admin=is_admin,
                 is_runner=False,
+                full_results=False,
             )
         )
         db.session.commit()
@@ -272,6 +275,7 @@ def add_new_runner_user() -> User | None:
                 last_submission_timestamp=0,
                 is_admin=False,
                 is_runner=True,
+                full_results=False,
             )
         )
         db.session.commit()
@@ -295,7 +299,7 @@ def enable_user(email: str, enabled: bool) -> tuple[str, int]:
     user.activated = True
     user.enabled = enabled
     db.session.commit()
-    return f"Account {email} activated", 200
+    return f"Account {email} activated and enabled", 200
 
 
 def activate_user(token: str) -> tuple[str, int]:
