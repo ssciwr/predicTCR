@@ -259,3 +259,39 @@ def test_runner_result_valid(client, result_zipfile):
     response = _upload_result(client, result_zipfile, 1)
     assert response.status_code == 200
     assert "result processed" in response.json["message"].lower()
+
+
+def test_admin_update_user_valid(client):
+    headers = _get_auth_headers(client, "admin@abc.xy", "admin")
+    user = client.get("/api/admin/users", headers=headers).json["users"][0]
+    invalid_update_keys = ["password", "idontexist"]
+    for invalid_update_key in invalid_update_keys:
+        user[invalid_update_key] = "this-will-be-ignored"
+    user["enabled"] = False
+    user["activated"] = False
+    user["quota"] = 99
+    user["full_results"] = True
+    user["submission_interval_minutes"] = 17
+    response = client.post("/api/admin/user", headers=headers, json=user)
+    assert response.status_code == 200
+    assert user["email"] in response.json["message"]
+    assert "updated" in response.json["message"]
+    updated_user = client.get("/api/admin/users", headers=headers).json["users"][0]
+    for invalid_update_key in invalid_update_keys:
+        user.pop(invalid_update_key)
+    assert updated_user == user
+
+
+def test_admin_update_user_invalid(client):
+    user_update = {"email": "Idontexist", "quota": 42}
+    # no auth header
+    response = client.post("/api/admin/user", json=user_update)
+    assert response.status_code == 401
+    # valid non-admin user auth header
+    headers = _get_auth_headers(client)
+    response = client.post("/api/admin/user", headers=headers, json=user_update)
+    assert response.status_code == 400
+    # invalid user email
+    headers = _get_auth_headers(client, "admin@abc.xy", "admin")
+    response = client.post("/api/admin/user", headers=headers, json=user_update)
+    assert response.status_code == 404

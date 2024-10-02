@@ -20,7 +20,7 @@ from predicTCR_server.model import (
     add_new_user,
     add_new_runner_user,
     reset_user_password,
-    enable_user,
+    update_user,
     activate_user,
     add_new_sample,
     get_samples,
@@ -233,22 +233,12 @@ def create_app(data_path: str = "/predictcr_data"):
             return jsonify(message="Admin account required"), 400
         return jsonify(get_samples())
 
-    @app.route("/api/admin/enable_user", methods=["POST"])
+    @app.route("/api/admin/user", methods=["POST"])
     @jwt_required()
-    def admin_enable_user():
+    def admin_update_user():
         if not current_user.is_admin:
             return jsonify(message="Admin account required"), 400
-        user_email = request.json.get("user_email", "")
-        message, code = enable_user(user_email, True)
-        return jsonify(message=message), code
-
-    @app.route("/api/admin/disable_user", methods=["POST"])
-    @jwt_required()
-    def admin_disable_user():
-        if not current_user.is_admin:
-            return jsonify(message="Admin account required"), 400
-        user_email = request.json.get("user_email", "")
-        message, code = enable_user(user_email, False)
+        message, code = update_user(request.json)
         return jsonify(message=message), code
 
     @app.route("/api/admin/users", methods=["GET"])

@@ -19,4 +19,5 @@ export type User = {
   is_admin: boolean;
   is_runner: boolean;
   full_results: boolean;
+  submission_interval_minutes: number;
 };

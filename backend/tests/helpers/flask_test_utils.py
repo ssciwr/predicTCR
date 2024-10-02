@@ -19,6 +19,7 @@ def add_test_users(app):
                     activated=True,
                     enabled=True,
                     quota=1,
+                    submission_interval_minutes=1,
                     last_submission_timestamp=0,
                     is_admin=is_admin,
                     is_runner=is_runner,
