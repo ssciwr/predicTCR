@@ -18,4 +18,5 @@ export type User = {
   last_submission_timestamp: number;
   is_admin: boolean;
   is_runner: boolean;
+  full_results: boolean;
 };

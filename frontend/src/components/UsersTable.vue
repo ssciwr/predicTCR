@@ -76,6 +76,7 @@ function disable_user(user_email: string) {
       <fwb-table-head-cell>Email</fwb-table-head-cell>
       <fwb-table-head-cell>Activated</fwb-table-head-cell>
       <fwb-table-head-cell>Enabled</fwb-table-head-cell>
+      <fwb-table-head-cell>Full results</fwb-table-head-cell>
       <fwb-table-head-cell>Quota</fwb-table-head-cell>
       <fwb-table-head-cell>Last submission</fwb-table-head-cell>
       <fwb-table-head-cell>Admin</fwb-table-head-cell>
@@ -91,6 +92,7 @@ function disable_user(user_email: string) {
         <fwb-table-cell>{{ user.email }}</fwb-table-cell>
         <fwb-table-cell>{{ user.activated ? "✓" : "✗" }}</fwb-table-cell>
         <fwb-table-cell>{{ user.enabled ? "✓" : "✗" }}</fwb-table-cell>
+        <fwb-table-cell>{{ user.full_results ? "✓" : "✗" }}</fwb-table-cell>
         <fwb-table-cell>{{ user.quota }}</fwb-table-cell>
         <fwb-table-cell>
           {{

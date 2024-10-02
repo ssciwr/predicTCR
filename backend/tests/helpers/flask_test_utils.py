@@ -22,6 +22,7 @@ def add_test_users(app):
                     last_submission_timestamp=0,
                     is_admin=is_admin,
                     is_runner=is_runner,
+                    full_results=False,
                 )
             )
             db.session.commit()
