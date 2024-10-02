@@ -68,6 +68,7 @@ class User(db.Model):
     activated: bool = db.Column(db.Boolean, nullable=False)
     enabled: bool = db.Column(db.Boolean, nullable=False)
     quota: int = db.Column(db.Integer, nullable=False)
+    submission_interval_minutes: int = db.Column(db.Integer, nullable=False)
     last_submission_timestamp: int = db.Column(db.Integer, nullable=False)
     is_admin: bool = db.Column(db.Boolean, nullable=False)
     is_runner: bool = db.Column(db.Boolean, nullable=False)
@@ -100,6 +101,7 @@ class User(db.Model):
             "activated": self.activated,
             "enabled": self.enabled,
             "quota": self.quota,
+            "submission_interval_minutes": self.submission_interval_minutes,
             "last_submission_timestamp": self.last_submission_timestamp,
             "is_admin": self.is_admin,
             "is_runner": self.is_runner,
@@ -237,6 +239,7 @@ def add_new_user(email: str, password: str, is_admin: bool) -> tuple[str, int]:
                 activated=False,
                 enabled=False,
                 quota=predicTCR_submission_quota,
+                submission_interval_minutes=predicTCR_submission_interval_minutes,
                 last_submission_timestamp=0,
                 is_admin=is_admin,
                 is_runner=False,
@@ -272,6 +275,7 @@ def add_new_runner_user() -> User | None:
                 activated=False,
                 enabled=True,
                 quota=0,
+                submission_interval_minutes=0,
                 last_submission_timestamp=0,
                 is_admin=False,
                 is_runner=True,
@@ -288,18 +292,27 @@ def add_new_runner_user() -> User | None:
         return None
 
 
-def enable_user(email: str, enabled: bool) -> tuple[str, int]:
-    logger.info(f"Setting user {email} enabled to {enabled}")
+def update_user(user_updates: dict) -> tuple[str, int]:
+    email = user_updates.get("email", "")
+    logger.info(f"Updating user {email}")
     user = db.session.execute(
         db.select(User).filter(User.email == email)
     ).scalar_one_or_none()
     if user is None:
         logger.info(f"  -> Unknown email address '{email}'")
-        return f"Unknown email address {email}", 400
-    user.activated = True
-    user.enabled = enabled
+        return f"Unknown email address {email}", 404
+    for key in [
+        "enabled",
+        "activated",
+        "quota",
+        "full_results",
+        "submission_interval_minutes",
+    ]:
+        value = user_updates.get(key, None)
+        if value is not None:
+            setattr(user, key, value)
     db.session.commit()
-    return f"Account {email} activated and enabled", 200
+    return f"Account {email} updated", 200
 
 
 def activate_user(token: str) -> tuple[str, int]:
