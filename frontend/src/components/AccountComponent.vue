@@ -3,7 +3,7 @@ import { ref, computed } from "vue";
 import { apiClient, logout } from "@/utils/api-client";
 import { validate_password } from "@/utils/validation";
 import { useUserStore } from "@/stores/user";
-import ListItem from "@/components/ListItem.vue";
+import CardComponent from "@/components/CardComponent.vue";
 import { FwbInput, FwbButton, FwbAlert } from "flowbite-vue";
 const userStore = useUserStore();
 const current_email = ref("");
@@ -51,7 +51,7 @@ function do_change_password() {
 </script>
 
 <template v-if="userStore.user != null">
-  <ListItem title="My account">
+  <CardComponent title="My account">
     <p>You are currently logged in as {{ current_email }}</p>
     <p>
       <fwb-button
@@ -64,8 +64,8 @@ function do_change_password() {
         Logout
       </fwb-button>
     </p>
-  </ListItem>
-  <ListItem title="Change password">
+  </CardComponent>
+  <CardComponent title="Change password">
     <fwb-input
       v-model="current_password"
       label="Current password"
@@ -128,5 +128,5 @@ function do_change_password() {
     <fwb-alert type="info" v-if="response_message.length > 0">
       {{ response_message }}
     </fwb-alert>
-  </ListItem>
+  </CardComponent>
 </template>
