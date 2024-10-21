@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { apiClient } from "@/utils/api-client";
-import ListItem from "@/components/ListItem.vue";
+import CardComponent from "@/components/CardComponent.vue";
 import { FwbInput, FwbButton, FwbAlert } from "flowbite-vue";
 const reset_email_address = ref("");
 const reset_message = ref("");
@@ -20,7 +20,7 @@ function do_reset() {
 </script>
 
 <template>
-  <ListItem title="Reset password">
+  <CardComponent title="Reset password">
     <p>
       If you have forgotten your password you can request a password reset email
       by entering the email address you used to sign up:
@@ -41,5 +41,5 @@ function do_reset() {
         {{ reset_message }}
       </fwb-alert>
     </div>
-  </ListItem>
+  </CardComponent>
 </template>

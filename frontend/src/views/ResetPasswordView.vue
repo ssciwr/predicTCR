@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ListItem from "@/components/ListItem.vue";
+import CardComponent from "@/components/CardComponent.vue";
 import { ref, computed } from "vue";
 import { apiClient, logout } from "@/utils/api-client";
 import { validate_password } from "@/utils/validation";
@@ -63,7 +63,7 @@ function reset_password() {
 
 <template>
   <main>
-    <ListItem :title="title" :icon="icon">
+    <CardComponent :title="title" :icon="icon">
       <form @submit.prevent="reset_password" v-if="show_form">
         <p>
           <label for="email_current">Email address:</label>
@@ -115,6 +115,6 @@ function reset_password() {
         {{ message }}
       </div>
       <p>Go to <RouterLink to="/login">login / signup</RouterLink> page.</p>
-    </ListItem>
+    </CardComponent>
   </main>
 </template>

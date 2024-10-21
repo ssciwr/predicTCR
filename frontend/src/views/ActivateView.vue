@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import ListItem from "@/components/ListItem.vue";
 import { ref } from "vue";
 import { apiClient } from "@/utils/api-client";
+import CardComponent from "@/components/CardComponent.vue";
 const props = defineProps({ activation_token: String });
 
 const title = ref("");
@@ -30,9 +30,9 @@ apiClient
 
 <template>
   <main>
-    <ListItem :title="title">
+    <CardComponent :title="title">
       <p>{{ message }}</p>
       <p>Go to <RouterLink to="/login">login</RouterLink> page.</p>
-    </ListItem>
+    </CardComponent>
   </main>
 </template>

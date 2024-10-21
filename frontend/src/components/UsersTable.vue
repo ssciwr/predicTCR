@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// @ts-ignore
 import {
   FwbButton,
   FwbTable,
@@ -15,7 +14,6 @@ import {
 import type { User } from "@/utils/types";
 import { apiClient, logout } from "@/utils/api-client";
 import { ref, computed } from "vue";
-import SignupComponent from "@/components/SignupComponent.vue";
 
 const props = defineProps<{
   is_runner: boolean;

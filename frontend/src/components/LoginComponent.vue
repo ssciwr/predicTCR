@@ -3,7 +3,6 @@ import { ref } from "vue";
 import { useUserStore } from "@/stores/user";
 import { FwbInput, FwbButton, FwbAlert } from "flowbite-vue";
 import { apiClient } from "@/utils/api-client";
-import ListItem from "@/components/ListItem.vue";
 import router from "@/router";
 const userStore = useUserStore();
 const login_email_address = ref("");

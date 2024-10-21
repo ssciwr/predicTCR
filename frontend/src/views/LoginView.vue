@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
-import ListItem from "@/components/ListItem.vue";
+import CardComponent from "@/components/CardComponent.vue";
 import LoginComponent from "@/components/LoginComponent.vue";
 import AccountComponent from "@/components/AccountComponent.vue";
 import ResetComponent from "@/components/ResetComponent.vue";
@@ -13,9 +13,9 @@ const userStore = useUserStore();
       <AccountComponent></AccountComponent>
     </template>
     <template v-else>
-      <ListItem title="Login">
+      <CardComponent title="Login">
         <LoginComponent></LoginComponent>
-      </ListItem>
+      </CardComponent>
       <ResetComponent></ResetComponent>
     </template>
   </main>
