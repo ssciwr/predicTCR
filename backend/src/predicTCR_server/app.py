@@ -17,6 +17,7 @@ from predicTCR_server.model import (
     db,
     Sample,
     User,
+    Settings,
     add_new_user,
     add_new_runner_user,
     reset_user_password,
@@ -146,6 +147,11 @@ def create_app(data_path: str = "/predictcr_data"):
     def samples():
         return get_samples(current_user.email)
 
+    @app.route("/api/settings", methods=["GET"])
+    @jwt_required()
+    def get_settings():
+        return db.session.get(Settings, 1).as_dict()
+
     @app.route("/api/input_h5_file", methods=["POST"])
     @jwt_required()
     def input_h5_file():
@@ -248,6 +254,21 @@ def create_app(data_path: str = "/predictcr_data"):
         message, code = update_user(request.json)
         return jsonify(message=message), code
 
+    @app.route("/api/admin/settings", methods=["POST"])
+    @jwt_required()
+    def admin_update_settings():
+        if not current_user.is_admin:
+            return jsonify(message="Admin account required"), 400
+        settings = db.session.get(Settings, 1)
+        settings_as_dict = settings.as_dict()
+        for key, value in request.json.items():
+            if key in settings_as_dict:
+                setattr(settings, key, value)
+            else:
+                logger.info(f"Ignoring key {key}")
+        db.session.commit()
+        return jsonify(message="Settings updated")
+
     @app.route("/api/admin/users", methods=["GET"])
     @jwt_required()
     def admin_users():
@@ -317,5 +338,17 @@ def create_app(data_path: str = "/predictcr_data"):
 
     with app.app_context():
         db.create_all()
+        if db.session.get(Settings, 1) is None:
+            db.session.add(
+                Settings(
+                    default_personal_submission_quota=10,
+                    default_personal_submission_interval_mins=30,
+                    global_quota=1000,
+                    tumor_types="Lung;Breast;Other",
+                    sources="TIL;PMBC;Other",
+                    csv_required_columns="barcode;cdr3;chain",
+                )
+            )
+            db.session.commit()
 
     return app

@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import pytest
 from predicTCR_server import create_app
 import shutil
