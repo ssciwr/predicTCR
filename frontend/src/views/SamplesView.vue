@@ -11,6 +11,8 @@ import {
   FwbFileInput,
   FwbInput,
   FwbAlert,
+  FwbModal,
+  FwbCheckbox,
 } from "flowbite-vue";
 
 const tumor_types = [
@@ -24,6 +26,16 @@ const sources = [
   { value: "other", name: "other" },
 ];
 const required_columns = ["barcode", "cdr3", "chain"];
+
+function closeModalSubmit() {
+  agree_to_conditions.value = false;
+  showModalSubmit.value = false;
+}
+function openModalSubmit() {
+  showModalSubmit.value = true;
+}
+const showModalSubmit = ref(false);
+const agree_to_conditions = ref(false);
 
 const sample_name = ref("");
 const tumor_type = ref("lung");
@@ -162,6 +174,7 @@ function add_sample() {
       }
       new_sample_error_message.value = error.response.data.message;
     });
+  closeModalSubmit();
   sample_name.value = "";
   selected_h5_file.value = null;
   h5_file_input_key.value++;
@@ -225,7 +238,7 @@ function add_sample() {
               class="mb-2"
             />
             <fwb-button
-              @click="add_sample"
+              @click="openModalSubmit"
               :disabled="
                 selected_h5_file === null ||
                 selected_csv_file === null ||
@@ -253,4 +266,22 @@ function add_sample() {
       </ListItem>
     </ListComponent>
   </main>
+
+  <fwb-modal size="md" v-if="showModalSubmit" @close="closeModalSubmit">
+    <template #header>
+      <div class="flex items-center text-lg">Conditions of use</div>
+    </template>
+    <template #body>
+      This service is provided for non-commercial use only, and is not to be
+      used for training models.
+      <fwb-checkbox
+        v-model="agree_to_conditions"
+        label="I agree to the conditions of use"
+        class="py-4"
+      />
+      <fwb-button @click="add_sample" :disabled="!agree_to_conditions"
+        >Submit</fwb-button
+      >
+    </template>
+  </fwb-modal>
 </template>
