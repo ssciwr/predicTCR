@@ -110,6 +110,24 @@ function openModalSignup() {
             </fwb-timeline-body>
           </fwb-timeline-content>
         </fwb-timeline-item>
+        <fwb-timeline-item>
+          <fwb-timeline-point>
+            <img src="/logo.png" />
+          </fwb-timeline-point>
+          <fwb-timeline-content>
+            <fwb-timeline-title> Funding </fwb-timeline-title>
+            <fwb-timeline-body>
+              <div class="flex flex-col md:flex-row">
+                <a href="https://dktk.dkfz.de/"
+                  ><img class="h-8 m-2 md:pr-5" src="/dktk.jpg" alt="DKTK"
+                /></a>
+                <a href="https://www.dkfz.de/"
+                  ><img class="h-8 m-2" src="/dkfz.png" alt="DKFZ"
+                /></a>
+              </div>
+            </fwb-timeline-body>
+          </fwb-timeline-content>
+        </fwb-timeline-item>
       </fwb-timeline>
     </div>
   </main>
