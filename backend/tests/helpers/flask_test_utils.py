@@ -53,6 +53,7 @@ def add_test_samples(app, data_path: pathlib.Path):
                 tumor_type=f"tumor_type{sample_id}",
                 source=f"source{sample_id}",
                 timestamp=sample_id,
+                timestamp_results=0,
                 status=Status.QUEUED,
                 has_results_zip=False,
             )

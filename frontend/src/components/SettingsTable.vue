@@ -78,6 +78,14 @@ function update_settings() {
       class="mb-2"
       label="Required columns in CSV file (separated by ;)"
     ></fwb-input>
+    <fwb-range
+      v-model="settings.runner_job_timeout_mins"
+      :steps="1"
+      :min="1"
+      :max="360"
+      :label="`Timeout for runner jobs: ${settings.runner_job_timeout_mins} minutes`"
+      class="mb-2"
+    />
     <fwb-button @click="update_settings" color="green">
       Save settings</fwb-button
     >

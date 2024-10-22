@@ -28,13 +28,22 @@ function get_jobs() {
 }
 
 get_jobs();
+
+function get_runtime_minutes(job: Job): number {
+  if (job.status === "running") {
+    return Math.ceil((Date.now() / 1000 - job.timestamp_start) / 60);
+  }
+  return Math.ceil((job.timestamp_end - job.timestamp_start) / 60);
+}
 </script>
 
 <template>
   <fwb-table aria-label="Runner jobs">
     <fwb-table-head>
-      <fwb-table-head-cell>Id</fwb-table-head-cell>
+      <fwb-table-head-cell>JobId</fwb-table-head-cell>
       <fwb-table-head-cell>SampleId</fwb-table-head-cell>
+      <fwb-table-head-cell>RunnerId</fwb-table-head-cell>
+      <fwb-table-head-cell>Hostname</fwb-table-head-cell>
       <fwb-table-head-cell>Start</fwb-table-head-cell>
       <fwb-table-head-cell>Runtime</fwb-table-head-cell>
       <fwb-table-head-cell>Status</fwb-table-head-cell>
@@ -48,12 +57,12 @@ get_jobs();
       >
         <fwb-table-cell>{{ job.id }}</fwb-table-cell>
         <fwb-table-cell>{{ job.sample_id }}</fwb-table-cell>
+        <fwb-table-cell>{{ job.runner_id }}</fwb-table-cell>
+        <fwb-table-cell>{{ job.runner_hostname }}</fwb-table-cell>
         <fwb-table-cell>{{
           new Date(job.timestamp_start * 1000).toISOString()
         }}</fwb-table-cell>
-        <fwb-table-cell
-          >{{ (job.timestamp_end - job.timestamp_start) / 60 }}m</fwb-table-cell
-        >
+        <fwb-table-cell>{{ get_runtime_minutes(job) }}m</fwb-table-cell>
         <fwb-table-cell>{{ job.status }}</fwb-table-cell>
         <fwb-table-cell>{{ job.error_message }}</fwb-table-cell>
       </fwb-table-row>

@@ -147,12 +147,13 @@ update_samples();
 
 const submit_message = ref("");
 
-let update_submit_message_timer = setInterval(() => {
+let update_data = setInterval(() => {
+  update_samples();
   update_submit_message();
 }, 30000);
 
 onUnmounted(() => {
-  clearInterval(update_submit_message_timer);
+  clearInterval(update_data);
 });
 
 function update_submit_message() {

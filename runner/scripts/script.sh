@@ -4,9 +4,9 @@
 
 echo "Starting fake analysis..."
 
-echo "Sleeping for 1 minute..."
+echo "Sleeping for 5 minutes..."
 
-sleep 60
+sleep 300
 
 ls > result.zip
 
