@@ -50,7 +50,15 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install -e .[tests]
-      - run: python -m pytest -sv
+      - run: python -m pytest --cov=predicTCR_server --cov-report=xml -sv
+      - uses: codecov/codecov-action@v4
+        with:
+          files: ./backend/coverage.xml
+          name: backend
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          verbose: true
+
   web-docker:
     runs-on: ubuntu-latest
     name: "Docker website"
