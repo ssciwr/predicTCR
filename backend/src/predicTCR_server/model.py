@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import re
 import flask
-from enum import Enum
+import enum
 import argon2
 import pathlib
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase, MappedAsDataclass, Mapped, mapped_column
 from werkzeug.datastructures import FileStorage
 from sqlalchemy.inspection import inspect
+from sqlalchemy import Integer, String, Boolean, Enum
 from dataclasses import dataclass
 from predicTCR_server.email import send_email
 from predicTCR_server.settings import predicTCR_url
@@ -20,12 +22,17 @@ from predicTCR_server.utils import (
     decode_password_reset_token,
 )
 
-db = SQLAlchemy()
+
+class Base(DeclarativeBase, MappedAsDataclass):
+    pass
+
+
+db = SQLAlchemy(model_class=Base)
 ph = argon2.PasswordHasher()
 logger = get_logger()
 
 
-class Status(str, Enum):
+class Status(str, enum.Enum):
     QUEUED = "queued"
     RUNNING = "running"
     COMPLETED = "completed"
@@ -34,34 +41,45 @@ class Status(str, Enum):
 
 @dataclass
 class Settings(db.Model):
-    id: int = db.Column(db.Integer, primary_key=True)
-    default_personal_submission_quota: int = db.Column(db.Integer, nullable=False)
-    default_personal_submission_interval_mins: int = db.Column(
-        db.Integer, nullable=False
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    default_personal_submission_quota: Mapped[int] = mapped_column(
+        Integer, nullable=False
     )
-    global_quota: int = db.Column(db.Integer, nullable=False)
-    tumor_types: str = db.Column(db.String, nullable=False)
-    sources: str = db.Column(db.String, nullable=False)
-    csv_required_columns: str = db.Column(db.String, nullable=False)
+    default_personal_submission_interval_mins: Mapped[int] = mapped_column(
+        Integer, nullable=False
+    )
+    global_quota: Mapped[int] = mapped_column(Integer, nullable=False)
+    tumor_types: Mapped[str] = mapped_column(String, nullable=False)
+    sources: Mapped[str] = mapped_column(String, nullable=False)
+    csv_required_columns: Mapped[str] = mapped_column(String, nullable=False)
 
     def as_dict(self):
-        return {
-            c: getattr(self, c)
-            for c in inspect(self).attrs.keys()
-            if c != "password_hash"
-        }
+        return {c: getattr(self, c) for c in inspect(self).attrs.keys()}
+
+
+@dataclass
+class Job(db.Model):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    sample_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    timestamp_start: Mapped[int] = mapped_column(Integer, nullable=False)
+    timestamp_end: Mapped[int] = mapped_column(Integer, nullable=False)
+    status: Mapped[Status] = mapped_column(Enum(Status), nullable=False)
+    error_message: Mapped[str] = mapped_column(String, nullable=False)
+
+    def as_dict(self):
+        return {c: getattr(self, c) for c in inspect(self).attrs.keys()}
 
 
 @dataclass
 class Sample(db.Model):
-    id: int = db.Column(db.Integer, primary_key=True)
-    email: str = db.Column(db.String(256), nullable=False)
-    name: str = db.Column(db.String(128), nullable=False)
-    tumor_type: str = db.Column(db.String(128), nullable=False)
-    source: str = db.Column(db.String(128), nullable=False)
-    timestamp: int = db.Column(db.Integer, nullable=False)
-    status: Status = db.Column(db.Enum(Status), nullable=False)
-    has_results_zip: bool = db.Column(db.Boolean, nullable=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    email: Mapped[str] = mapped_column(String(256), nullable=False)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    tumor_type: Mapped[str] = mapped_column(String(128), nullable=False)
+    source: Mapped[str] = mapped_column(String(128), nullable=False)
+    timestamp: Mapped[int] = mapped_column(Integer, nullable=False)
+    status: Mapped[Status] = mapped_column(Enum(Status), nullable=False)
+    has_results_zip: Mapped[bool] = mapped_column(Boolean, nullable=False)
 
     def _base_path(self) -> pathlib.Path:
         data_path = flask.current_app.config["PREDICTCR_DATA_PATH"]
@@ -79,17 +97,17 @@ class Sample(db.Model):
 
 @dataclass
 class User(db.Model):
-    id: int = db.Column(db.Integer, primary_key=True)
-    email: str = db.Column(db.Text, nullable=False, unique=True)
-    password_hash: str = db.Column(db.Text, nullable=False)
-    activated: bool = db.Column(db.Boolean, nullable=False)
-    enabled: bool = db.Column(db.Boolean, nullable=False)
-    quota: int = db.Column(db.Integer, nullable=False)
-    submission_interval_minutes: int = db.Column(db.Integer, nullable=False)
-    last_submission_timestamp: int = db.Column(db.Integer, nullable=False)
-    is_admin: bool = db.Column(db.Boolean, nullable=False)
-    is_runner: bool = db.Column(db.Boolean, nullable=False)
-    full_results: bool = db.Column(db.Boolean, nullable=False)
+    id: int = mapped_column(Integer, primary_key=True)
+    email: str = mapped_column(String, nullable=False, unique=True)
+    password_hash: str = mapped_column(String, nullable=False)
+    activated: bool = mapped_column(Boolean, nullable=False)
+    enabled: bool = mapped_column(Boolean, nullable=False)
+    quota: int = mapped_column(Integer, nullable=False)
+    submission_interval_minutes: int = mapped_column(Integer, nullable=False)
+    last_submission_timestamp: int = mapped_column(Integer, nullable=False)
+    is_admin: bool = mapped_column(Boolean, nullable=False)
+    is_runner: bool = mapped_column(Boolean, nullable=False)
+    full_results: bool = mapped_column(Boolean, nullable=False)
 
     def set_password_nocheck(self, new_password: str):
         self.password_hash = ph.hash(new_password)
@@ -145,17 +163,26 @@ def request_job() -> int | None:
 
 
 def process_result(
-    sample_id: str, success: bool, result_zip_file: FileStorage | None
+    job_id: int,
+    sample_id: int,
+    success: bool,
+    error_message: str,
+    result_zip_file: FileStorage | None,
 ) -> tuple[str, int]:
-    sample = db.session.execute(
-        db.select(Sample).filter_by(id=sample_id)
-    ).scalar_one_or_none()
+    sample = db.session.get(Sample, sample_id)
     if sample is None:
         logger.warning(f" --> Unknown sample id {sample_id}")
         return f"Unknown sample id {sample_id}", 400
+    job = db.session.get(Job, job_id)
+    if job is None:
+        logger.warning(f" --> Unknown job id {job_id}")
+        return f"Unknown job id {job_id}", 400
+    job.timestamp_end = timestamp_now()
     if success is False:
         sample.has_results_zip = False
         sample.status = Status.FAILED
+        job.status = Status.FAILED
+        job.error_message = error_message
         db.session.commit()
         return "Result processed", 200
     if result_zip_file is None:
@@ -165,6 +192,7 @@ def process_result(
     result_zip_file.save(sample.result_file_path())
     sample.has_results_zip = True
     sample.status = Status.COMPLETED
+    job.status = Status.COMPLETED
     db.session.commit()
     return "Result processed", 200
 
@@ -244,6 +272,7 @@ def add_new_user(email: str, password: str, is_admin: bool) -> tuple[str, int]:
     try:
         db.session.add(
             User(
+                id=None,
                 email=email,
                 password_hash=ph.hash(password),
                 activated=False,
@@ -282,6 +311,7 @@ def add_new_runner_user() -> User | None:
             runner_name = f"runner{runner_number}"
         db.session.add(
             User(
+                id=None,
                 email=runner_name,
                 password_hash="",
                 activated=False,
@@ -419,6 +449,7 @@ def add_new_sample(
     settings = db.session.get(Settings, 1)
     settings.global_quota -= 1
     new_sample = Sample(
+        id=None,
         email=email,
         name=name,
         tumor_type=tumor_type,

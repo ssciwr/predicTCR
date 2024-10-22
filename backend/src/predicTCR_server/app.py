@@ -13,10 +13,13 @@ from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 from flask_cors import cross_origin
 from predicTCR_server.logger import get_logger
+from predicTCR_server.utils import timestamp_now
 from predicTCR_server.model import (
     db,
     Sample,
     User,
+    Job,
+    Status,
     Settings,
     add_new_user,
     add_new_runner_user,
@@ -281,6 +284,16 @@ def create_app(data_path: str = "/predictcr_data"):
         )
         return jsonify(users=[user.as_dict() for user in users])
 
+    @app.route("/api/admin/jobs", methods=["GET"])
+    @jwt_required()
+    def admin_jobs():
+        if not current_user.is_admin:
+            return jsonify(message="Admin account required"), 400
+        jobs = (
+            db.session.execute(db.select(Job).order_by(db.desc(Job.id))).scalars().all()
+        )
+        return jsonify(jobs=[job.as_dict() for job in jobs])
+
     @app.route("/api/admin/runner_token", methods=["GET"])
     @jwt_required()
     def admin_runner_token():
@@ -305,7 +318,17 @@ def create_app(data_path: str = "/predictcr_data"):
         sample_id = request_job()
         if sample_id is None:
             return jsonify(message="No job available"), 204
-        return {"sample_id": sample_id}
+        new_job = Job(
+            id=None,
+            sample_id=sample_id,
+            timestamp_start=timestamp_now(),
+            timestamp_end=0,
+            status=Status.RUNNING,
+            error_message="",
+        )
+        db.session.add(new_job)
+        db.session.commit()
+        return {"job_id": new_job.id, "sample_id": sample_id}
 
     @app.route("/api/runner/result", methods=["POST"])
     @cross_origin()
@@ -317,6 +340,9 @@ def create_app(data_path: str = "/predictcr_data"):
         sample_id = form_as_dict.get("sample_id", None)
         if sample_id is None:
             return jsonify(message="Missing key: sample_id"), 400
+        job_id = form_as_dict.get("job_id", None)
+        if job_id is None:
+            return jsonify(message="Missing key: job_id"), 400
         success = form_as_dict.get("success", None)
         if success is None or success.lower() not in ["true", "false"]:
             logger.info("  -> missing success key")
@@ -328,12 +354,14 @@ def create_app(data_path: str = "/predictcr_data"):
             return jsonify(message="Result has success=True but no file"), 400
         runner_hostname = form_as_dict.get("runner_hostname", "")
         logger.info(
-            f"Result upload for '{sample_id}' from runner {current_user.email} / {runner_hostname}"
+            f"Job '{job_id}' uploaded result for '{sample_id}' from runner {current_user.email} / {runner_hostname}"
         )
-        error_message = form_as_dict.get("error_message", None)
-        if error_message is not None:
+        error_message = form_as_dict.get("error_message", "")
+        if error_message != "":
             logger.info(f"  -> error message: {error_message}")
-        message, code = process_result(sample_id, success, zipfile)
+        message, code = process_result(
+            int(job_id), int(sample_id), success, error_message, zipfile
+        )
         return jsonify(message=message), code
 
     with app.app_context():
@@ -341,6 +369,7 @@ def create_app(data_path: str = "/predictcr_data"):
         if db.session.get(Settings, 1) is None:
             db.session.add(
                 Settings(
+                    id=None,
                     default_personal_submission_quota=10,
                     default_personal_submission_interval_mins=30,
                     global_quota=1000,
