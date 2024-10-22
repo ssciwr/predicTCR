@@ -129,6 +129,39 @@ def test_samples_valid(client):
     assert len(response.json) == 4
 
 
+def test_get_settings_valid(client):
+    headers = _get_auth_headers(client)
+    response = client.get("/api/settings", headers=headers)
+    assert response.status_code == 200
+    assert response.json == {
+        "csv_required_columns": "barcode;cdr3;chain",
+        "default_personal_submission_interval_mins": 30,
+        "default_personal_submission_quota": 10,
+        "global_quota": 1000,
+        "id": 1,
+        "sources": "TIL;PMBC;Other",
+        "tumor_types": "Lung;Breast;Other",
+    }
+
+
+def test_update_settings_valid(client):
+    headers = _get_auth_headers(client, "admin@abc.xy", "admin")
+    new_settings = {
+        "csv_required_columns": "BB;CC;QQ",
+        "default_personal_submission_interval_mins": 60,
+        "default_personal_submission_quota": 7,
+        "global_quota": 999,
+        "id": 1,
+        "sources": "a;b;g",
+        "tumor_types": "1;2;6",
+        "invalid-key": "invalid",
+    }
+    response = client.post("/api/admin/settings", headers=headers, json=new_settings)
+    assert response.status_code == 200
+    new_settings.pop("invalid-key")
+    assert client.get("/api/settings", headers=headers).json == new_settings
+
+
 @pytest.mark.parametrize("input_file_type", ["h5", "csv"])
 def test_input_file_invalid(client, input_file_type: str):
     # no auth header

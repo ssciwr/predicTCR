@@ -21,3 +21,13 @@ export type User = {
   full_results: boolean;
   submission_interval_minutes: number;
 };
+
+export type Settings = {
+  id: number;
+  default_personal_submission_quota: number;
+  default_personal_submission_interval_mins: number;
+  global_quota: number;
+  tumor_types: string;
+  sources: string;
+  csv_required_columns: string;
+};

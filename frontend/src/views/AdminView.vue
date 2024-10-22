@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SamplesTable from "@/components/SamplesTable.vue";
+import SettingsTable from "@/components/SettingsTable.vue";
 import UsersTable from "@/components/UsersTable.vue";
 import ListComponent from "@/components/ListComponent.vue";
 import ListItem from "@/components/ListItem.vue";
@@ -46,8 +47,11 @@ get_samples();
 <template>
   <main>
     <div class="p-4">
-      <ListComponent title="Generate runner API Token">
-        <ListItem>
+      <ListComponent>
+        <ListItem title="Settings">
+          <SettingsTable />
+        </ListItem>
+        <ListItem title="Generate runner API Token">
           <p>
             Here you can generate a new runner user with an API token for
             authentication. Note the token should be kept secret! It is valid

@@ -7,13 +7,10 @@ import argon2
 import pathlib
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.datastructures import FileStorage
+from sqlalchemy.inspection import inspect
 from dataclasses import dataclass
 from predicTCR_server.email import send_email
-from predicTCR_server.settings import (
-    predicTCR_url,
-    predicTCR_submission_interval_minutes,
-    predicTCR_submission_quota,
-)
+from predicTCR_server.settings import predicTCR_url
 from predicTCR_server.logger import get_logger
 from predicTCR_server.utils import (
     timestamp_now,
@@ -33,6 +30,26 @@ class Status(str, Enum):
     RUNNING = "running"
     COMPLETED = "completed"
     FAILED = "failed"
+
+
+@dataclass
+class Settings(db.Model):
+    id: int = db.Column(db.Integer, primary_key=True)
+    default_personal_submission_quota: int = db.Column(db.Integer, nullable=False)
+    default_personal_submission_interval_mins: int = db.Column(
+        db.Integer, nullable=False
+    )
+    global_quota: int = db.Column(db.Integer, nullable=False)
+    tumor_types: str = db.Column(db.String, nullable=False)
+    sources: str = db.Column(db.String, nullable=False)
+    csv_required_columns: str = db.Column(db.String, nullable=False)
+
+    def as_dict(self):
+        return {
+            c: getattr(self, c)
+            for c in inspect(self).attrs.keys()
+            if c != "password_hash"
+        }
 
 
 @dataclass
@@ -96,16 +113,9 @@ class User(db.Model):
 
     def as_dict(self):
         return {
-            "id": self.id,
-            "email": self.email,
-            "activated": self.activated,
-            "enabled": self.enabled,
-            "quota": self.quota,
-            "submission_interval_minutes": self.submission_interval_minutes,
-            "last_submission_timestamp": self.last_submission_timestamp,
-            "is_admin": self.is_admin,
-            "is_runner": self.is_runner,
-            "full_results": self.full_results,
+            c: getattr(self, c)
+            for c in inspect(self).attrs.keys()
+            if c != "password_hash"
         }
 
 
@@ -238,8 +248,10 @@ def add_new_user(email: str, password: str, is_admin: bool) -> tuple[str, int]:
                 password_hash=ph.hash(password),
                 activated=False,
                 enabled=False,
-                quota=predicTCR_submission_quota,
-                submission_interval_minutes=predicTCR_submission_interval_minutes,
+                quota=db.session.get(Settings, 1).default_personal_submission_quota,
+                submission_interval_minutes=db.session.get(
+                    Settings, 1
+                ).default_personal_submission_interval_mins,
                 last_submission_timestamp=0,
                 is_admin=is_admin,
                 is_runner=False,
@@ -371,6 +383,9 @@ def get_user_if_allowed_to_submit(email: str) -> tuple[User | None, str]:
         return None, f"Unknown email address {email}."
     if user.quota <= 0:
         return None, "You have reached your sample submission quota."
+    settings = db.session.get(Settings, 1)
+    if settings.global_quota <= 0:
+        return None, "The service has reached its sample submission quota."
     mins_since_last_submission = (
         timestamp_now() - user.last_submission_timestamp
     ) // 60
@@ -401,6 +416,8 @@ def add_new_sample(
         return None, msg
     user.last_submission_timestamp = timestamp_now()
     user.quota -= 1
+    settings = db.session.get(Settings, 1)
+    settings.global_quota -= 1
     new_sample = Sample(
         email=email,
         name=name,

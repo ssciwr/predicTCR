@@ -4,7 +4,7 @@ import SamplesTable from "@/components/SamplesTable.vue";
 import ListComponent from "@/components/ListComponent.vue";
 import ListItem from "@/components/ListItem.vue";
 import { apiClient, logout } from "@/utils/api-client";
-import type { Sample } from "@/utils/types";
+import type { Sample, Settings } from "@/utils/types";
 import {
   FwbButton,
   FwbSelect,
@@ -15,17 +15,14 @@ import {
   FwbCheckbox,
 } from "flowbite-vue";
 
-const tumor_types = [
-  { value: "lung", name: "lung" },
-  { value: "breast", name: "breast" },
-  { value: "other", name: "other" },
-];
-const sources = [
-  { value: "TIL", name: "TIL" },
-  { value: "PBMC", name: "PMBC" },
-  { value: "other", name: "other" },
-];
-const required_columns = ["barcode", "cdr3", "chain"];
+type OptionsType = {
+  name: string;
+  value: string;
+};
+
+const tumor_types = ref([] as Array<OptionsType>);
+const sources = ref([] as Array<OptionsType>);
+const required_columns = ref([] as Array<string>);
 
 function closeModalSubmit() {
   agree_to_conditions.value = false;
@@ -38,8 +35,8 @@ const showModalSubmit = ref(false);
 const agree_to_conditions = ref(false);
 
 const sample_name = ref("");
-const tumor_type = ref("lung");
-const source = ref("TIL");
+const tumor_type = ref("");
+const source = ref("");
 const selected_h5_file = ref(null as null | File);
 const h5_file_input_key = ref(0);
 const selected_csv_file = ref(null as null | File);
@@ -70,7 +67,7 @@ async function validate_csv_file(file: File) {
   if (lines.length >= 1) {
     const columns = lines[0].split(/,/);
     console.log(columns);
-    for (const required_column of required_columns) {
+    for (const required_column of required_columns.value) {
       if (!columns.includes(required_column)) {
         console.log(`Missing header: ${required_column}`);
         return false;
@@ -96,13 +93,38 @@ async function on_csv_file_changed(event: Event) {
       selected_csv_file.value = null;
       csv_file_input_key.value++;
       window.alert(
-        `Provided csv file doesn't contain the required columns ${required_columns}`,
+        `Provided csv file doesn't contain the required columns ${required_columns.value}`,
       );
     }
   } else {
     selected_csv_file.value = null;
   }
 }
+
+function string_to_options(str: string): Array<OptionsType> {
+  const items = str.split(";");
+  return items.map((x) => ({ value: x, name: x }));
+}
+
+function update_options() {
+  apiClient
+    .get("settings")
+    .then((response) => {
+      const settings = response.data as Settings;
+      console.log(settings);
+      tumor_types.value = string_to_options(settings.tumor_types);
+      sources.value = string_to_options(settings.sources);
+      required_columns.value = settings.csv_required_columns.split(";");
+    })
+    .catch((error) => {
+      if (error.response.status > 400) {
+        logout();
+      }
+      console.log(error);
+    });
+}
+
+update_options();
 
 const samples = ref([] as Sample[]);
 
