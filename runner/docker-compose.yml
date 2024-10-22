@@ -10,9 +10,11 @@ services:
     deploy:
       mode: replicated
       replicas: ${PREDICTCR_RUNNER_JOBS:-1}
+    restart: always
     networks:
       - predictcr-network
 
 networks:
   predictcr-network:
     name: predictcr
+    external: true

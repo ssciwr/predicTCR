@@ -14,6 +14,7 @@ def add_test_users(app):
             email = f"{name}@abc.xy"
             db.session.add(
                 User(
+                    id=None,
                     email=email,
                     password_hash=ph.hash(name),
                     activated=True,
@@ -46,6 +47,7 @@ def add_test_samples(app, data_path: pathlib.Path):
                 with open(f"{ref_dir}/input.{input_file_type}", "w") as f:
                     f.write(input_file_type)
             new_sample = Sample(
+                id=None,
                 email="user@abc.xy",
                 name=name,
                 tumor_type=f"tumor_type{sample_id}",

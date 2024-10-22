@@ -31,3 +31,12 @@ export type Settings = {
   sources: string;
   csv_required_columns: string;
 };
+
+export type Job = {
+  id: number;
+  sample_id: number;
+  timestamp_start: number;
+  timestamp_end: number;
+  status: string;
+  error_message: string;
+};

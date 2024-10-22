@@ -3,6 +3,7 @@ import SamplesTable from "@/components/SamplesTable.vue";
 import SettingsTable from "@/components/SettingsTable.vue";
 import UsersTable from "@/components/UsersTable.vue";
 import ListComponent from "@/components/ListComponent.vue";
+import JobsTable from "@/components/JobsTable.vue";
 import ListItem from "@/components/ListItem.vue";
 import { FwbButton } from "flowbite-vue";
 import { ref } from "vue";
@@ -71,6 +72,9 @@ get_samples();
         </ListItem>
         <ListItem title="Samples">
           <SamplesTable :samples="samples" :admin="true"></SamplesTable>
+        </ListItem>
+        <ListItem title="Runner Jobs">
+          <JobsTable />
         </ListItem>
       </ListComponent>
     </div>

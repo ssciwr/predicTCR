@@ -210,12 +210,13 @@ def test_result_invalid(client):
     assert "No results available" in response.json["message"]
 
 
-def _upload_result(client, result_zipfile: pathlib.Path, sample_id: int):
+def _upload_result(client, result_zipfile: pathlib.Path, job_id: int, sample_id: int):
     headers = _get_auth_headers(client, "runner@abc.xy", "runner")
     with open(result_zipfile, "rb") as f:
         response = client.post(
             "/api/runner/result",
             data={
+                "job_id": job_id,
                 "sample_id": sample_id,
                 "success": True,
                 "file": (io.BytesIO(f.read()), result_zipfile.name),
@@ -225,17 +226,55 @@ def _upload_result(client, result_zipfile: pathlib.Path, sample_id: int):
     return response
 
 
-def test_result_valid(client, result_zipfile):
-    headers = _get_auth_headers(client, "user@abc.xy", "user")
-    sample_id = 1
-    assert _upload_result(client, result_zipfile, sample_id).status_code == 200
+def test_runner_valid_success(client, result_zipfile):
+    headers = _get_auth_headers(client, "runner@abc.xy", "runner")
+    # request job
+    request_job_response = client.post(
+        "/api/runner/request_job",
+        json={"runner_hostname": "me"},
+        headers=headers,
+    )
+    assert request_job_response.status_code == 200
+    assert request_job_response.json == {"sample_id": 1, "job_id": 1}
+    # upload successful result
+    assert _upload_result(client, result_zipfile, 1, 1).status_code == 200
     response = client.post(
         "/api/result",
-        json={"sample_id": sample_id},
-        headers=headers,
+        json={"sample_id": 1},
+        headers=_get_auth_headers(client, "user@abc.xy", "user"),
     )
     assert response.status_code == 200
     assert len(response.data) > 1
+
+
+def test_runner_valid_failure(client, result_zipfile):
+    headers = _get_auth_headers(client, "runner@abc.xy", "runner")
+    # request job
+    request_job_response = client.post(
+        "/api/runner/request_job",
+        json={"runner_hostname": "me"},
+        headers=headers,
+    )
+    assert request_job_response.status_code == 200
+    assert request_job_response.json == {"sample_id": 1, "job_id": 1}
+    # upload failure result
+    result_response = client.post(
+        "/api/runner/result",
+        data={
+            "job_id": 1,
+            "sample_id": 1,
+            "success": False,
+            "error_message": "Something went wrong",
+        },
+        headers=headers,
+    )
+    assert result_response.status_code == 200
+    response = client.post(
+        "/api/result",
+        json={"sample_id": 1},
+        headers=_get_auth_headers(client, "user@abc.xy", "user"),
+    )
+    assert response.status_code == 400
 
 
 def test_admin_samples_valid(client):
@@ -286,12 +325,6 @@ def test_admin_users_valid(client):
     response = client.get("/api/admin/users", headers=headers)
     assert response.status_code == 200
     assert "users" in response.json
-
-
-def test_runner_result_valid(client, result_zipfile):
-    response = _upload_result(client, result_zipfile, 1)
-    assert response.status_code == 200
-    assert "result processed" in response.json["message"].lower()
 
 
 def test_admin_update_user_valid(client):
