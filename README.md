@@ -20,9 +20,10 @@ Users of the site can
 
 Users with admin rights can additionally
 
-- see a list of all users
-- see a list of all samples and results
+- view and modify global settings
 - create an API token for a runner to use
+- view and modify registered users and runners
+- view and download samples and results
 
 ## Runners
 
