@@ -52,6 +52,7 @@ class Settings(db.Model):
     tumor_types: Mapped[str] = mapped_column(String, nullable=False)
     sources: Mapped[str] = mapped_column(String, nullable=False)
     csv_required_columns: Mapped[str] = mapped_column(String, nullable=False)
+    runner_job_timeout_mins: Mapped[int] = mapped_column(Integer, nullable=False)
 
     def as_dict(self):
         return {c: getattr(self, c) for c in inspect(self).attrs.keys()}
@@ -61,6 +62,8 @@ class Settings(db.Model):
 class Job(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     sample_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    runner_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    runner_hostname: Mapped[str] = mapped_column(String, nullable=False)
     timestamp_start: Mapped[int] = mapped_column(Integer, nullable=False)
     timestamp_end: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[Status] = mapped_column(Enum(Status), nullable=False)
@@ -78,6 +81,7 @@ class Sample(db.Model):
     tumor_type: Mapped[str] = mapped_column(String(128), nullable=False)
     source: Mapped[str] = mapped_column(String(128), nullable=False)
     timestamp: Mapped[int] = mapped_column(Integer, nullable=False)
+    timestamp_results: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[Status] = mapped_column(Enum(Status), nullable=False)
     has_results_zip: Mapped[bool] = mapped_column(Boolean, nullable=False)
 
@@ -145,7 +149,26 @@ def get_samples(email: str | None = None) -> list[Sample]:
 
 
 def request_job() -> int | None:
-    # todo: go through running jobs and reset to queued if they have been running for more than e.g. 2 hrs
+    job_timeout_minutes = db.session.get(Settings, 1).runner_job_timeout_mins
+    sample_to_resubmit = (
+        db.session.execute(
+            db.select(Sample).filter(
+                (Sample.status == Status.RUNNING)
+                & (
+                    timestamp_now() - Sample.timestamp_results
+                    > job_timeout_minutes * 60
+                )
+            )
+        )
+        .scalars()
+        .first()
+    )
+    if sample_to_resubmit is not None:
+        logger.info(
+            f"Sample {sample_to_resubmit.id} has been running for more than {job_timeout_minutes} minutes - putting back in queue"
+        )
+        sample_to_resubmit.status = Status.QUEUED
+        db.session.commit()
     selected_samples = (
         db.select(Sample)
         .filter(Sample.status == Status.QUEUED)
@@ -157,6 +180,7 @@ def request_job() -> int | None:
         return None
     else:
         logger.info(f"  --> sample id {sample.id}")
+        sample.timestamp_results = timestamp_now()
         sample.status = Status.RUNNING
         db.session.commit()
         return sample.id
@@ -185,6 +209,11 @@ def process_result(
         job.error_message = error_message
         db.session.commit()
         return "Result processed", 200
+    if sample.has_results_zip:
+        logger.warning(f" --> Sample {sample_id} already has results")
+        job.status = Status.COMPLETED
+        db.session.commit()
+        return f"Sample {sample_id} already has results", 400
     if result_zip_file is None:
         logger.warning(" --> No zipfile")
         return "Zip file missing", 400
@@ -455,6 +484,7 @@ def add_new_sample(
         tumor_type=tumor_type,
         source=source,
         timestamp=timestamp_now(),
+        timestamp_results=0,
         status=Status.QUEUED,
         has_results_zip=False,
     )

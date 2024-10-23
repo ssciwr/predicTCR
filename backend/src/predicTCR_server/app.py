@@ -160,7 +160,7 @@ def create_app(data_path: str = "/predictcr_data"):
     def input_h5_file():
         sample_id = request.json.get("sample_id", None)
         logger.info(
-            f"User {current_user.email} requesting results for sample {sample_id}"
+            f"User {current_user.email} requesting h5 file for sample {sample_id}"
         )
         filters = {"id": sample_id}
         if not current_user.is_admin and not current_user.is_runner:
@@ -178,7 +178,7 @@ def create_app(data_path: str = "/predictcr_data"):
     def input_csv_file():
         sample_id = request.json.get("sample_id", None)
         logger.info(
-            f"User {current_user.email} requesting results for sample {sample_id}"
+            f"User {current_user.email} requesting csv file for sample {sample_id}"
         )
         filters = {"id": sample_id}
         if not current_user.is_admin and not current_user.is_runner:
@@ -321,6 +321,8 @@ def create_app(data_path: str = "/predictcr_data"):
         new_job = Job(
             id=None,
             sample_id=sample_id,
+            runner_id=current_user.id,
+            runner_hostname=runner_hostname,
             timestamp_start=timestamp_now(),
             timestamp_end=0,
             status=Status.RUNNING,
@@ -376,6 +378,7 @@ def create_app(data_path: str = "/predictcr_data"):
                     tumor_types="Lung;Breast;Other",
                     sources="TIL;PMBC;Other",
                     csv_required_columns="barcode;cdr3;chain",
+                    runner_job_timeout_mins=60,
                 )
             )
             db.session.commit()
