@@ -6,7 +6,7 @@ import ListComponent from "@/components/ListComponent.vue";
 import JobsTable from "@/components/JobsTable.vue";
 import ListItem from "@/components/ListItem.vue";
 import { FwbButton } from "flowbite-vue";
-import { ref } from "vue";
+import { onUnmounted, ref } from "vue";
 import type { Sample } from "@/utils/types";
 import { apiClient, logout } from "@/utils/api-client";
 
@@ -43,6 +43,14 @@ function get_samples() {
 }
 
 get_samples();
+
+let update_data = setInterval(() => {
+  get_samples();
+}, 30000);
+
+onUnmounted(() => {
+  clearInterval(update_data);
+});
 </script>
 
 <template>

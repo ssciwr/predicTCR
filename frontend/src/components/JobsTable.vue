@@ -9,7 +9,7 @@ import {
 } from "flowbite-vue";
 import type { Job } from "@/utils/types";
 import { apiClient, logout } from "@/utils/api-client";
-import { ref } from "vue";
+import { onUnmounted, ref } from "vue";
 
 const jobs = ref([] as Job[]);
 
@@ -28,6 +28,14 @@ function get_jobs() {
 }
 
 get_jobs();
+
+let update_data = setInterval(() => {
+  get_jobs();
+}, 30000);
+
+onUnmounted(() => {
+  clearInterval(update_data);
+});
 
 function get_runtime_minutes(job: Job): number {
   if (job.status === "running") {
