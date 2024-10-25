@@ -286,6 +286,34 @@ def test_admin_samples_valid(client):
     assert len(response.json) == 4
 
 
+def test_admin_delete_samples_valid_admin_user(client):
+    headers = _get_auth_headers(client, "admin@abc.xy", "admin")
+    assert len(client.get("/api/admin/samples", headers=headers).json) == 4
+    response = client.delete("/api/admin/samples/1", headers=headers)
+    assert response.status_code == 200
+    assert len(client.get("/api/admin/samples", headers=headers).json) == 3
+    response = client.delete("/api/admin/samples/1", headers=headers)
+    assert response.status_code == 404
+    response = client.delete("/api/admin/samples/2", headers=headers)
+    assert response.status_code == 200
+    assert len(client.get("/api/admin/samples", headers=headers).json) == 2
+
+
+@pytest.mark.parametrize(
+    "index,sample_id,status",
+    [(0, 4, "failed"), (1, 3, "completed"), (2, 2, "running"), (3, 1, "queued")],
+)
+def test_admin_resubmit_samples_valid_admin_user(client, index, sample_id, status):
+    headers = _get_auth_headers(client, "admin@abc.xy", "admin")
+    sample_before = client.get("/api/admin/samples", headers=headers).json[index]
+    assert sample_before["status"] == status
+    response = client.post(f"/api/admin/resubmit-sample/{sample_id}", headers=headers)
+    assert response.status_code == 200
+    sample_after = client.get("/api/admin/samples", headers=headers).json[index]
+    assert sample_after["status"] == "queued"
+    assert sample_after["has_results_zip"] is False
+
+
 def test_admin_runner_token_invalid(client):
     # no auth header
     response = client.get("/api/admin/runner_token")

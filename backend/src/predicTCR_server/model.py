@@ -85,18 +85,18 @@ class Sample(db.Model):
     status: Mapped[Status] = mapped_column(Enum(Status), nullable=False)
     has_results_zip: Mapped[bool] = mapped_column(Boolean, nullable=False)
 
-    def _base_path(self) -> pathlib.Path:
+    def base_path(self) -> pathlib.Path:
         data_path = flask.current_app.config["PREDICTCR_DATA_PATH"]
         return pathlib.Path(f"{data_path}/{self.id}")
 
     def input_h5_file_path(self) -> pathlib.Path:
-        return self._base_path() / "input.h5"
+        return self.base_path() / "input.h5"
 
     def input_csv_file_path(self) -> pathlib.Path:
-        return self._base_path() / "input.csv"
+        return self.base_path() / "input.csv"
 
     def result_file_path(self) -> pathlib.Path:
-        return self._base_path() / "result.zip"
+        return self.base_path() / "result.zip"
 
 
 @dataclass

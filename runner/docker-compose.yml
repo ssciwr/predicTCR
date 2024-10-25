@@ -17,4 +17,3 @@ services:
 networks:
   predictcr-network:
     name: predictcr
-    external: true
