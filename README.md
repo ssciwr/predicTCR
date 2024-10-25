@@ -1,4 +1,4 @@
-# predicTCR website
+# <img src="https://predictcr.lkeegan.dev/logo.png" width=48 height=48> predicTCR website
 
 [![CI](https://github.com/ssciwr/predicTCR/actions/workflows/ci.yml/badge.svg)](https://github.com/ssciwr/predicTCR/actions/workflows/ci.yml)
 
