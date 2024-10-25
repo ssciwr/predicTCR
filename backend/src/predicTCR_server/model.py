@@ -95,8 +95,14 @@ class Sample(db.Model):
     def input_csv_file_path(self) -> pathlib.Path:
         return self.base_path() / "input.csv"
 
-    def result_file_path(self) -> pathlib.Path:
-        return self.base_path() / "result.zip"
+    def user_result_file_path(self) -> pathlib.Path:
+        return self.base_path() / "user_results.zip"
+
+    def trusted_user_result_file_path(self) -> pathlib.Path:
+        return self.base_path() / "trusted_user_results.zip"
+
+    def admin_result_file_path(self) -> pathlib.Path:
+        return self.base_path() / "admin_results.zip"
 
 
 @dataclass
@@ -191,37 +197,43 @@ def process_result(
     sample_id: int,
     success: bool,
     error_message: str,
-    result_zip_file: FileStorage | None,
+    user_result_zip_file: FileStorage | None,
+    trusted_user_result_zip_file: FileStorage | None,
+    admin_result_zip_file: FileStorage | None,
 ) -> tuple[str, int]:
     sample = db.session.get(Sample, sample_id)
     if sample is None:
         logger.warning(f" --> Unknown sample id {sample_id}")
         return f"Unknown sample id {sample_id}", 400
+    sample.base_path().mkdir(parents=True, exist_ok=True)
     job = db.session.get(Job, job_id)
     if job is None:
         logger.warning(f" --> Unknown job id {job_id}")
         return f"Unknown job id {job_id}", 400
     job.timestamp_end = timestamp_now()
+    if success:
+        job.status = Status.COMPLETED
+    else:
+        job.status = Status.FAILED
+        job.error_message = error_message
+    db.session.commit()
+    if sample.has_results_zip:
+        logger.warning(f" --> Sample {sample_id} already has results")
+        return f"Sample {sample_id} already has results", 400
+    if admin_result_zip_file is not None:
+        admin_result_zip_file.save(sample.admin_result_file_path())
     if success is False:
         sample.has_results_zip = False
         sample.status = Status.FAILED
-        job.status = Status.FAILED
-        job.error_message = error_message
         db.session.commit()
         return "Result processed", 200
-    if sample.has_results_zip:
-        logger.warning(f" --> Sample {sample_id} already has results")
-        job.status = Status.COMPLETED
-        db.session.commit()
-        return f"Sample {sample_id} already has results", 400
-    if result_zip_file is None:
-        logger.warning(" --> No zipfile")
-        return "Zip file missing", 400
-    sample.result_file_path().parent.mkdir(parents=True, exist_ok=True)
-    result_zip_file.save(sample.result_file_path())
+    if user_result_zip_file is None or trusted_user_result_zip_file is None:
+        logger.warning(" --> Missing user result zipfile")
+        return "User result zip file missing", 400
+    user_result_zip_file.save(sample.user_result_file_path())
+    trusted_user_result_zip_file.save(sample.trusted_user_result_file_path())
     sample.has_results_zip = True
     sample.status = Status.COMPLETED
-    job.status = Status.COMPLETED
     db.session.commit()
     return "Result processed", 200
 

@@ -67,6 +67,14 @@ export function download_result(sample_id: number, sample_name: string) {
   );
 }
 
+export function download_admin_result(sample_id: number, sample_name: string) {
+  download_file_from_endpoint(
+    "admin/result",
+    { sample_id: sample_id },
+    `${sample_name}_admin.zip`,
+  );
+}
+
 export function logout() {
   const user = useUserStore();
   user.user = null;

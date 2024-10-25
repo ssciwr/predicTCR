@@ -16,6 +16,7 @@ import {
   download_input_csv_file,
   download_input_h5_file,
   download_result,
+  download_admin_result,
   logout,
 } from "@/utils/api-client";
 import type { Sample } from "@/utils/types";
@@ -82,7 +83,11 @@ function delete_current_sample() {
       <fwb-table-head-cell v-if="admin">Actions</fwb-table-head-cell>
     </fwb-table-head>
     <fwb-table-body>
-      <fwb-table-row v-for="sample in samples" :key="sample.id">
+      <fwb-table-row
+        v-for="sample in samples"
+        :key="sample.id"
+        :class="sample.status === 'failed' ? '!bg-red-200' : '!bg-slate-50'"
+      >
         <fwb-table-cell v-if="admin">{{ sample["id"] }}</fwb-table-cell>
         <fwb-table-cell>{{
           new Date(sample["timestamp"] * 1000).toLocaleDateString("de-DE")
@@ -108,7 +113,14 @@ function delete_current_sample() {
           </fwb-a>
         </fwb-table-cell>
         <fwb-table-cell>
-          <template v-if="sample.has_results_zip">
+          <template v-if="admin">
+            <fwb-a
+              href=""
+              @click.prevent="download_admin_result(sample.id, sample.name)"
+              >zip</fwb-a
+            >
+          </template>
+          <template v-else-if="sample.has_results_zip">
             <fwb-a
               href=""
               @click.prevent="download_result(sample.id, sample.name)"
