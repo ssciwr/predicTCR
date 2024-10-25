@@ -71,7 +71,11 @@ get_samples();
           <UsersTable :is_runner="false"></UsersTable>
         </ListItem>
         <ListItem title="Samples">
-          <SamplesTable :samples="samples" :admin="true"></SamplesTable>
+          <SamplesTable
+            :samples="samples"
+            :admin="true"
+            @samples-modified="get_samples"
+          ></SamplesTable>
         </ListItem>
         <ListItem title="Runner Jobs">
           <JobsTable />

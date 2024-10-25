@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import secrets
 import datetime
+import shutil
 import flask
 from flask import Flask
 from flask import jsonify
@@ -248,6 +249,36 @@ def create_app(data_path: str = "/predictcr_data"):
         if not current_user.is_admin:
             return jsonify(message="Admin account required"), 400
         return jsonify(get_samples())
+
+    @app.route("/api/admin/resubmit-sample/<int:sample_id>", methods=["POST"])
+    @jwt_required()
+    def admin_resubmit_sample(sample_id: int):
+        if not current_user.is_admin:
+            return jsonify(message="Admin account required"), 400
+        sample = db.session.get(Sample, sample_id)
+        if sample is None:
+            return jsonify(message="Sample not found"), 404
+        sample.result_file_path().unlink(missing_ok=True)
+        sample.has_results_zip = False
+        sample.status = Status.QUEUED
+        db.session.commit()
+        return jsonify(message="Sample added to the queue")
+
+    @app.route("/api/admin/samples/<int:sample_id>", methods=["DELETE"])
+    @jwt_required()
+    def admin_delete_sample(sample_id: int):
+        if not current_user.is_admin:
+            return jsonify(message="Admin account required"), 400
+        sample = db.session.get(Sample, sample_id)
+        if sample is None:
+            return jsonify(message="Sample not found"), 404
+        try:
+            shutil.rmtree(sample.base_path())
+        except Exception as e:
+            logger.error(e)
+        db.session.delete(sample)
+        db.session.commit()
+        return jsonify(message="Sample deleted")
 
     @app.route("/api/admin/user", methods=["POST"])
     @jwt_required()

@@ -32,7 +32,7 @@ def add_test_users(app):
 
 def add_test_samples(app, data_path: pathlib.Path):
     with app.app_context():
-        for sample_id, name in zip(
+        for sample_id, name, status in zip(
             [1, 2, 3, 4],
             [
                 "s1",
@@ -40,6 +40,7 @@ def add_test_samples(app, data_path: pathlib.Path):
                 "s3",
                 "s4",
             ],
+            [Status.QUEUED, Status.RUNNING, Status.COMPLETED, Status.FAILED],
         ):
             ref_dir = data_path / f"{sample_id}"
             ref_dir.mkdir(parents=True, exist_ok=True)
@@ -54,7 +55,7 @@ def add_test_samples(app, data_path: pathlib.Path):
                 source=f"source{sample_id}",
                 timestamp=sample_id,
                 timestamp_results=0,
-                status=Status.QUEUED,
+                status=status,
                 has_results_zip=False,
             )
             db.session.add(new_sample)
