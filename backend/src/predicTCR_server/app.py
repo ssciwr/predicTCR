@@ -211,7 +211,10 @@ def create_app(data_path: str = "/predictcr_data"):
         if not user_sample.has_results_zip:
             logger.info(f"  -> sample {sample_id} found but no results available")
             return jsonify(message="No results available"), 400
-        requested_file = user_sample.result_file_path()
+        if current_user.full_results:
+            requested_file = user_sample.trusted_user_result_file_path()
+        else:
+            requested_file = user_sample.user_result_file_path()
         if not requested_file.is_file():
             logger.info(f"  -> file {requested_file} not found")
             return jsonify(message="Results file not found"), 400
@@ -243,6 +246,26 @@ def create_app(data_path: str = "/predictcr_data"):
             return jsonify(sample=new_sample)
         return jsonify(message=error_message), 400
 
+    @app.route("/api/admin/result", methods=["POST"])
+    @jwt_required()
+    def admin_result():
+        if not current_user.is_admin:
+            return jsonify(message="Admin account required"), 400
+        sample_id = request.json.get("sample_id", None)
+        logger.info(
+            f"User {current_user.email} requesting admin results for sample {sample_id}"
+        )
+        user_sample = db.session.get(Sample, sample_id)
+        if user_sample is None:
+            logger.info(f"  -> sample {sample_id} not found")
+            return jsonify(message="Sample not found"), 400
+        requested_file = user_sample.admin_result_file_path()
+        if not requested_file.is_file():
+            logger.info(f"  -> file {requested_file} not found")
+            return jsonify(message="Results file not found"), 400
+        logger.info(f"Returning file {requested_file}")
+        return flask.send_file(requested_file, as_attachment=True)
+
     @app.route("/api/admin/samples", methods=["GET"])
     @jwt_required()
     def admin_all_samples():
@@ -258,7 +281,9 @@ def create_app(data_path: str = "/predictcr_data"):
         sample = db.session.get(Sample, sample_id)
         if sample is None:
             return jsonify(message="Sample not found"), 404
-        sample.result_file_path().unlink(missing_ok=True)
+        sample.user_result_file_path().unlink(missing_ok=True)
+        sample.trusted_user_result_file_path().unlink(missing_ok=True)
+        sample.admin_result_file_path().unlink(missing_ok=True)
         sample.has_results_zip = False
         sample.status = Status.QUEUED
         db.session.commit()
@@ -381,10 +406,14 @@ def create_app(data_path: str = "/predictcr_data"):
             logger.info("  -> missing success key")
             return jsonify(message="Missing key: success=True/False"), 400
         success = success.lower() == "true"
-        zipfile = request.files.to_dict().get("file", None)
-        if success is True and zipfile is None:
+        user_zipfile = request.files.to_dict().get("user_results", None)
+        trusted_user_zipfile = request.files.to_dict().get("trusted_user_results", None)
+        admin_zipfile = request.files.to_dict().get("admin_results", None)
+        if success is True and (user_zipfile is None or admin_zipfile is None):
             logger.info("  -> missing zipfile")
-            return jsonify(message="Result has success=True but no file"), 400
+            return jsonify(
+                message="Result has success=True but a result zipfile is missing"
+            ), 400
         runner_hostname = form_as_dict.get("runner_hostname", "")
         logger.info(
             f"Job '{job_id}' uploaded result for '{sample_id}' from runner {current_user.email} / {runner_hostname}"
@@ -393,7 +422,13 @@ def create_app(data_path: str = "/predictcr_data"):
         if error_message != "":
             logger.info(f"  -> error message: {error_message}")
         message, code = process_result(
-            int(job_id), int(sample_id), success, error_message, zipfile
+            int(job_id),
+            int(sample_id),
+            success,
+            error_message,
+            user_zipfile,
+            trusted_user_zipfile,
+            admin_zipfile,
         )
         return jsonify(message=message), code
 

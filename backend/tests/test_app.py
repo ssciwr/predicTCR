@@ -221,7 +221,9 @@ def _upload_result(client, result_zipfile: pathlib.Path, job_id: int, sample_id:
                 "job_id": job_id,
                 "sample_id": sample_id,
                 "success": True,
-                "file": (io.BytesIO(f.read()), result_zipfile.name),
+                "user_results": (io.BytesIO(f.read()), result_zipfile.name),
+                "trusted_user_results": (io.BytesIO(f.read()), result_zipfile.name),
+                "admin_results": (io.BytesIO(f.read()), result_zipfile.name),
             },
             headers=headers,
         )
