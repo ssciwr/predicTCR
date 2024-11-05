@@ -8,7 +8,7 @@ const userStore = useUserStore();
 </script>
 
 <template>
-  <main>
+  <main class="flex flex-col items-center justify-center">
     <template v-if="userStore.user !== null">
       <AccountComponent></AccountComponent>
     </template>

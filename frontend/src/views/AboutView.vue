@@ -23,7 +23,7 @@ function openModalSignup() {
 </script>
 
 <template>
-  <main>
+  <main class="flex flex-col items-center justify-center">
     <fwb-jumbotron
       header-text="predicTCR v2"
       header-classes="text-slate-100"

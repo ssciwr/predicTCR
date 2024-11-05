@@ -207,7 +207,7 @@ function add_sample() {
 </script>
 
 <template>
-  <main>
+  <main class="flex flex-col items-center justify-center">
     <ListComponent>
       <ListItem title="Submit a sample">
         <template v-if="submit_message.length > 0">

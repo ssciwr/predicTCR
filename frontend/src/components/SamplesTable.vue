@@ -18,11 +18,12 @@ import {
   download_result,
   download_admin_result,
   logout,
+  download_string_as_file,
 } from "@/utils/api-client";
 import type { Sample } from "@/utils/types";
 import { ref } from "vue";
 
-defineProps<{
+const props = defineProps<{
   samples: Sample[];
   admin: boolean;
 }>();
@@ -66,6 +67,29 @@ function delete_current_sample() {
       console.log(error);
     });
 }
+
+function timestamp_to_date(timestamp_secs: number): string {
+  const secs_to_ms = 1000;
+  return new Date(timestamp_secs * secs_to_ms).toLocaleDateString("de-DE");
+}
+
+function job_runtime(sample: Sample): string {
+  // returns job runtime as hh::mm::ss
+  const runtime_secs = sample.timestamp_job_end - sample.timestamp_job_start;
+  const secs_to_ms = 1000;
+  if (runtime_secs <= 0) {
+    return "-";
+  }
+  return new Date(runtime_secs * secs_to_ms).toISOString().slice(11, 19);
+}
+
+function download_samples_as_csv() {
+  let csv = "Id,Date,Email,SampleName,TumorType,Source,Status,Runtime\n";
+  for (const sample of props.samples) {
+    csv += `${sample.id},${timestamp_to_date(sample.timestamp)},${sample.email},${sample.name},${sample.tumor_type},${sample.source},${sample.status},${job_runtime(sample)}\n`;
+  }
+  download_string_as_file("samples.csv", csv);
+}
 </script>
 
 <template>
@@ -78,6 +102,7 @@ function delete_current_sample() {
       <fwb-table-head-cell>Tumor type</fwb-table-head-cell>
       <fwb-table-head-cell>Source</fwb-table-head-cell>
       <fwb-table-head-cell>Status</fwb-table-head-cell>
+      <fwb-table-head-cell v-if="admin">Runtime</fwb-table-head-cell>
       <fwb-table-head-cell>Inputs</fwb-table-head-cell>
       <fwb-table-head-cell>Results</fwb-table-head-cell>
       <fwb-table-head-cell v-if="admin">Actions</fwb-table-head-cell>
@@ -88,15 +113,16 @@ function delete_current_sample() {
         :key="sample.id"
         :class="sample.status === 'failed' ? '!bg-red-200' : '!bg-slate-50'"
       >
-        <fwb-table-cell v-if="admin">{{ sample["id"] }}</fwb-table-cell>
+        <fwb-table-cell v-if="admin">{{ sample.id }}</fwb-table-cell>
         <fwb-table-cell>{{
-          new Date(sample["timestamp"] * 1000).toLocaleDateString("de-DE")
+          timestamp_to_date(sample.timestamp)
         }}</fwb-table-cell>
-        <fwb-table-cell v-if="admin">{{ sample["email"] }}</fwb-table-cell>
-        <fwb-table-cell>{{ sample["name"] }}</fwb-table-cell>
-        <fwb-table-cell>{{ sample["tumor_type"] }}</fwb-table-cell>
-        <fwb-table-cell>{{ sample["source"] }}</fwb-table-cell>
-        <fwb-table-cell>{{ sample["status"] }}</fwb-table-cell>
+        <fwb-table-cell v-if="admin">{{ sample.email }}</fwb-table-cell>
+        <fwb-table-cell>{{ sample.name }}</fwb-table-cell>
+        <fwb-table-cell>{{ sample.tumor_type }}</fwb-table-cell>
+        <fwb-table-cell>{{ sample.source }}</fwb-table-cell>
+        <fwb-table-cell>{{ sample.status }}</fwb-table-cell>
+        <fwb-table-cell v-if="admin">{{ job_runtime(sample) }}</fwb-table-cell>
         <fwb-table-cell>
           <fwb-a
             href=""
@@ -151,6 +177,9 @@ function delete_current_sample() {
       </fwb-table-row>
     </fwb-table-body>
   </fwb-table>
+  <fwb-button v-if="admin" class="mt-2" @click="download_samples_as_csv"
+    >Download as CSV</fwb-button
+  >
 
   <fwb-modal size="lg" v-if="show_resubmit_modal" @close="close_modals">
     <template #header>

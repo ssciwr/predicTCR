@@ -12,7 +12,7 @@ import {
   FwbRange,
 } from "flowbite-vue";
 import type { User } from "@/utils/types";
-import { apiClient, logout } from "@/utils/api-client";
+import { apiClient, download_string_as_file, logout } from "@/utils/api-client";
 import { ref, computed } from "vue";
 
 const props = defineProps<{
@@ -62,6 +62,17 @@ function update_user() {
       }
       console.log(error);
     });
+}
+
+function download_users_as_csv() {
+  let csv =
+    "Id,Email,Activated,Enabled,FullResults,Quota,SubmissionIntervalMinutes,Admin\n";
+  for (const user of users.value) {
+    if (!user.is_runner) {
+      csv += `${user.id},${user.email},${user.activated},${user.enabled},${user.full_results},${user.quota},${user.submission_interval_minutes},${user.is_admin}\n`;
+    }
+  }
+  download_string_as_file("users.csv", csv);
 }
 </script>
 
@@ -114,6 +125,9 @@ function update_user() {
       </fwb-table-row>
     </fwb-table-body>
   </fwb-table>
+  <fwb-button class="mt-2" @click="download_users_as_csv"
+    >Download as CSV</fwb-button
+  >
 
   <fwb-modal size="lg" v-if="show_modal" @close="close_modal">
     <template #header>

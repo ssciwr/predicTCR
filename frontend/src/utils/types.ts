@@ -5,7 +5,8 @@ export type Sample = {
   tumor_type: string;
   source: number;
   timestamp: number;
-  timestamp_results: number;
+  timestamp_job_start: number;
+  timestamp_job_end: number;
   status: string;
   has_results_zip: boolean;
 };

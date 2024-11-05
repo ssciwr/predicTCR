@@ -29,7 +29,7 @@ apiClient
 </script>
 
 <template>
-  <main>
+  <main class="flex flex-col items-center justify-center">
     <CardComponent :title="title">
       <p>{{ message }}</p>
       <p>Go to <RouterLink to="/login">login</RouterLink> page.</p>
