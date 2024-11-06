@@ -1,8 +1,8 @@
 [
   {
     "id": 1,
-    "url": "https://www.dkfz.de",
-    "text": "News item #1: some text about a paper written that used predicTCR. Click on this text to open the associated link."
+    "url": "https://www.nature.com/articles/s41591-024-03152-x",
+    "text": "Nature Medicine paper: predicTCR used to show that bone marrow enriched for tumor reactive T cells!."
   },
   {
     "id": 2,
@@ -13,20 +13,5 @@
     "id": 3,
     "url": "https://www.dkfz.de",
     "text": "News item #3: some text about a paper written that used predicTCR."
-  },
-  {
-    "id": 4,
-    "url": "https://www.dkfz.de",
-    "text": "News item #4: some text about a paper written that used predicTCR."
-  },
-  {
-    "id": 5,
-    "url": "https://www.dkfz.de",
-    "text": "News item #5: some text about a paper written that used predicTCR."
-  },
-  {
-    "id": 6,
-    "url": "https://www.dkfz.de",
-    "text": "News item #6: some text about a paper written that used predicTCR."
   }
 ]
