@@ -4,7 +4,6 @@ import {
   FwbFooterCopyright,
   FwbFooterLinkGroup,
   FwbFooterLink,
-  FwbFooterBrand,
 } from "flowbite-vue";
 </script>
 
