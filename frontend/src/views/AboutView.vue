@@ -6,6 +6,7 @@ import ListItem from "@/components/ListItem.vue";
 import LoginComponent from "@/components/LoginComponent.vue";
 import SignupComponent from "@/components/SignupComponent.vue";
 import { RouterLink } from "vue-router";
+import CarouselComponent from "@/components/CarouselComponent.vue";
 const showModalLogin = ref(false);
 function closeModals() {
   showModalSignup.value = false;
@@ -29,7 +30,7 @@ function openModalSignup() {
       header-classes="text-slate-100"
       sub-text="Prediction of tumor-reactive T cells and TCRs from scRNA-seq data."
       sub-text-classes="text-slate-300"
-      class="mb-4 bg-slate-800 bg-splash bg-no-repeat bg-center bg-cover md:rounded-lg"
+      class="mb-4 bg-slate-800 bg-splash bg-no-repeat bg-center bg-cover md:rounded-lg py-0 lg:py-0 pt-8 lg:pt-8"
     >
       <div class="flex flex-row justify-center">
         <fwb-button
@@ -45,6 +46,7 @@ function openModalSignup() {
           Log in
         </fwb-button>
       </div>
+      <CarouselComponent class="mt-4" />
     </fwb-jumbotron>
     <div class="p-4">
       <ListComponent>

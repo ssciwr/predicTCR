@@ -48,5 +48,5 @@ const login_title = computed(() => {
   <div class="flex flex-col items-stretch justify-center">
     <RouterView />
   </div>
-  <FooterComponent></FooterComponent>
+  <FooterComponent class="sticky"></FooterComponent>
 </template>

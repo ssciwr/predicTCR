@@ -28,6 +28,9 @@ importers:
       vue-router:
         specifier: ^4.4.5
         version: 4.4.5(vue@3.5.10(typescript@5.5.4))
+      vueperslides:
+        specifier: ^3.5.1
+        version: 3.5.1(vue@3.5.10(typescript@5.5.4))
     devDependencies:
       "@rushstack/eslint-patch":
         specifier: ^1.10.4
@@ -4645,6 +4648,14 @@ packages:
       typescript:
         optional: true
 
+  vueperslides@3.5.1:
+    resolution:
+      {
+        integrity: sha512-g/Lauv1svlSaERzLNeys0oeLmpDFiXkIa+lxg+lJma6m6wXqJKzKKVIi8Kvc95XPnl42n7PYYJyr0+FMV6WZGw==,
+      }
+    peerDependencies:
+      vue: ^2.6.14 || ^3.2.0
+
   w3c-xmlserializer@5.0.0:
     resolution:
       {
@@ -7723,6 +7734,10 @@ snapshots:
       "@vue/shared": 3.5.10
     optionalDependencies:
       typescript: 5.5.4
+
+  vueperslides@3.5.1(vue@3.5.10(typescript@5.5.4)):
+    dependencies:
+      vue: 3.5.10(typescript@5.5.4)
 
   w3c-xmlserializer@5.0.0:
     dependencies:

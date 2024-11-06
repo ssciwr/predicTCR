@@ -19,7 +19,8 @@
     "flowbite-vue": "^0.1.6",
     "pinia": "^2.2.2",
     "vue": "^3.5.10",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "vueperslides": "^3.5.1"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.10.4",
