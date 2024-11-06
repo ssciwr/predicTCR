@@ -80,3 +80,12 @@ export function logout() {
   user.user = null;
   user.token = "";
 }
+
+export function download_string_as_file(filename: string, str: string) {
+  const link = document.createElement("a");
+  const file = new Blob([str], { type: "text/plain" });
+  link.href = URL.createObjectURL(file);
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}

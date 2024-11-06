@@ -44,7 +44,7 @@ const login_title = computed(() => {
       </fwb-navbar-collapse>
     </template>
   </fwb-navbar>
-  <div class="flex flex-col items-center justify-center">
+  <div class="flex flex-col items-stretch justify-center">
     <RouterView />
   </div>
 </template>

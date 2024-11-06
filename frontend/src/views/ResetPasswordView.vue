@@ -62,7 +62,7 @@ function reset_password() {
 </script>
 
 <template>
-  <main>
+  <main class="flex flex-col items-center justify-center">
     <CardComponent :title="title" :icon="icon">
       <form @submit.prevent="reset_password" v-if="show_form">
         <p>

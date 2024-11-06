@@ -81,7 +81,8 @@ class Sample(db.Model):
     tumor_type: Mapped[str] = mapped_column(String(128), nullable=False)
     source: Mapped[str] = mapped_column(String(128), nullable=False)
     timestamp: Mapped[int] = mapped_column(Integer, nullable=False)
-    timestamp_results: Mapped[int] = mapped_column(Integer, nullable=False)
+    timestamp_job_start: Mapped[int] = mapped_column(Integer, nullable=False)
+    timestamp_job_end: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[Status] = mapped_column(Enum(Status), nullable=False)
     has_results_zip: Mapped[bool] = mapped_column(Boolean, nullable=False)
 
@@ -161,7 +162,7 @@ def request_job() -> int | None:
             db.select(Sample).filter(
                 (Sample.status == Status.RUNNING)
                 & (
-                    timestamp_now() - Sample.timestamp_results
+                    timestamp_now() - Sample.timestamp_job_start
                     > job_timeout_minutes * 60
                 )
             )
@@ -186,7 +187,8 @@ def request_job() -> int | None:
         return None
     else:
         logger.info(f"  --> sample id {sample.id}")
-        sample.timestamp_results = timestamp_now()
+        sample.timestamp_job_start = timestamp_now()
+        sample.timestamp_job_end = 0
         sample.status = Status.RUNNING
         db.session.commit()
         return sample.id
@@ -210,6 +212,7 @@ def process_result(
     if job is None:
         logger.warning(f" --> Unknown job id {job_id}")
         return f"Unknown job id {job_id}", 400
+    sample.timestamp_job_end = timestamp_now()
     job.timestamp_end = timestamp_now()
     if success:
         job.status = Status.COMPLETED
@@ -496,7 +499,8 @@ def add_new_sample(
         tumor_type=tumor_type,
         source=source,
         timestamp=timestamp_now(),
-        timestamp_results=0,
+        timestamp_job_start=0,
+        timestamp_job_end=0,
         status=Status.QUEUED,
         has_results_zip=False,
     )

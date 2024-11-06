@@ -86,7 +86,7 @@ function update_settings() {
       :label="`Timeout for runner jobs: ${settings.runner_job_timeout_mins} minutes`"
       class="mb-2"
     />
-    <fwb-button @click="update_settings" color="green">
+    <fwb-button @click="update_settings" class="mt-2" color="green">
       Save settings</fwb-button
     >
   </div>
