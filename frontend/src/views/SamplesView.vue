@@ -147,13 +147,14 @@ update_samples();
 
 const submit_message = ref("");
 
-let update_data = setInterval(() => {
+let update_data_handle = setTimeout(function update_data() {
   update_samples();
   update_submit_message();
-}, 30000);
+  update_data_handle = setTimeout(update_data, 20000);
+});
 
 onUnmounted(() => {
-  clearInterval(update_data);
+  clearTimeout(update_data_handle);
 });
 
 function update_submit_message() {
