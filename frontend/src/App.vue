@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterLink, RouterView, useRoute } from "vue-router";
+import { RouterLink, RouterView } from "vue-router";
 import { computed } from "vue";
 import {
   FwbNavbar,
@@ -8,6 +8,7 @@ import {
   FwbNavbarLogo,
 } from "flowbite-vue";
 import { useUserStore } from "@/stores/user";
+import FooterComponent from "@/components/FooterComponent.vue";
 const userStore = useUserStore();
 const login_title = computed(() => {
   if (userStore.user !== null) {
@@ -47,4 +48,5 @@ const login_title = computed(() => {
   <div class="flex flex-col items-stretch justify-center">
     <RouterView />
   </div>
+  <FooterComponent></FooterComponent>
 </template>
