@@ -60,3 +60,9 @@ sudo sqlite3 docker_volume/predicTCR.db
 sqlite> UPDATE user SET is_admin=true WHERE email='user@embl.de';
 sqlite> .quit
 ```
+### Visitor count
+
+To get a count of the unique visitor IPs from the nginx logs:
+```
+sudo docker compose logs frontend --no-log-prefix | grep "GET" | awk '{print $1}' | sort | uniq | wc -l
+```
