@@ -29,12 +29,14 @@ with the JWT token, the location of your script folder, and other desired settin
 PREDICTCR_API_URL="https://predictcr.com/api"
 PREDICTCR_JWT_TOKEN="abc123"
 PREDICTCR_RUNNER_SCRIPT_DIR="./script"
-PREDICTCR_RUNNERS=4
+PREDICTCR_RUNNER_JOBS=4
 PREDICTCR_MAXPOLL_INTERVAL=60
 ```
 
 With this .env file, `docker compose up -d` will start 4 runner images in the background, which will copy the files
 from the `script` folder to do the processing.
+
+To update to the latest runner docker images: `docker compose pull && docker compose up -d`
 
 ## Development
 
