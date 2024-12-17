@@ -26,7 +26,7 @@ Then create a file named `.env` in the same location as the docker-compose.yml,
 with the JWT token, the location of your script folder, and other desired settings, e.g.:
 
 ```
-PREDICTCR_API_URL="https://predictcr.lkeegan.dev/api"
+PREDICTCR_API_URL="https://predictcr.com/api"
 PREDICTCR_JWT_TOKEN="abc123"
 PREDICTCR_RUNNER_SCRIPT_DIR="./script"
 PREDICTCR_RUNNERS=4

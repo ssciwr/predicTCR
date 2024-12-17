@@ -1,8 +1,8 @@
-# <img src="https://predictcr.lkeegan.dev/logo.png" width=48 height=48> predicTCR website
+# <img src="https://predictcr.com/logo.png" width=48 height=48> predicTCR website
 
 [![CI](https://github.com/ssciwr/predicTCR/actions/workflows/ci.yml/badge.svg)](https://github.com/ssciwr/predicTCR/actions/workflows/ci.yml)
 
-The source code for the [predicTCR website](https://predictcr.lkeegan.dev/).
+The source code for the [predicTCR website](https://predictcr.com/).
 
 ## Implemented features
 

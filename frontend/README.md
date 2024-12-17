@@ -1,6 +1,6 @@
 # predicTCR Frontend
 
-The vue.js frontend for [predictcr.lkeegan.dev](https://predictcr.lkeegan.dev/).
+The vue.js frontend for [predictcr.com](https://predictcr.com/).
 
 Note: these are development install/use instructions, see
 [README_DEV.md](https://github.com/ssciwr/predicTCR/blob/main/README_DEV.md)

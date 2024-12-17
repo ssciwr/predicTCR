@@ -20,8 +20,8 @@ For example the current test deployment on heicloud looks like this:
 
 ```
 PREDICTCR_DATA="/home/ubuntu/predicTCR/docker_volume"
-PREDICTCR_SSL_CERT="/etc/letsencrypt/live/predictcr.lkeegan.dev/fullchain.pem"
-PREDICTCR_SSL_KEY="/etc/letsencrypt/live/predictcr.lkeegan.dev/privkey.pem"
+PREDICTCR_SSL_CERT="/etc/letsencrypt/live/predictcr.com/fullchain.pem"
+PREDICTCR_SSL_KEY="/etc/letsencrypt/live/predictcr.com/privkey.pem"
 PREDICTCR_JWT_SECRET_KEY="abc123" # to generate a new secret key: `python -c "import secrets; print(secrets.token_urlsafe(64))"`
 ```
 

@@ -3,7 +3,7 @@ services:
     image: ghcr.io/ssciwr/predictcr_runner:${PREDICTCR_DOCKER_IMAGE_TAG:-latest}
     build: .
     environment:
-      - PREDICTCR_API_URL=${PREDICTCR_API_URL:-https://predictcr.lkeegan.dev/api}
+      - PREDICTCR_API_URL=${PREDICTCR_API_URL:-https://predictcr.com/api}
       - PREDICTCR_JWT_TOKEN=${PREDICTCR_JWT_TOKEN:-}
       - PREDICTCR_MAX_POLL_INTERVAL=${PREDICTCR_MAX_POLL_INTERVAL:-60}
       - PREDICTCR_LOG_LEVEL=${PREDICTCR_LOG_LEVEL:-INFO}

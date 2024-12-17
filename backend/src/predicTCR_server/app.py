@@ -63,12 +63,12 @@ def create_app(data_path: str = "/predictcr_data"):
     # https://flask-jwt-extended.readthedocs.io/en/stable/api/#flask_jwt_extended.JWTManager.user_identity_loader
     @jwt.user_identity_loader
     def user_identity_lookup(user):
-        return user.id
+        return str(user.id)
 
     # https://flask-jwt-extended.readthedocs.io/en/stable/api/#flask_jwt_extended.JWTManager.user_lookup_loader
     @jwt.user_lookup_loader
     def user_lookup_callback(_jwt_header, jwt_data):
-        identity = jwt_data["sub"]
+        identity = int(jwt_data["sub"])
         return db.session.execute(
             db.select(User).filter(User.id == identity)
         ).scalar_one_or_none()
