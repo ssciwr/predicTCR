@@ -34,6 +34,7 @@ export type Settings = {
   sources: string;
   csv_required_columns: string;
   runner_job_timeout_mins: number;
+  about_md: string;
 };
 
 export type Job = {

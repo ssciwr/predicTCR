@@ -1,5 +1,46 @@
 @import "../../node_modules/flowbite-vue/dist/index.css";
+@import "github-markdown-css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.markdown-body {
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 45px;
+}
+
+@media (max-width: 767px) {
+  .markdown-body {
+    padding: 15px;
+  }
+}
+
+/* additional css for markdown rendering to restore ul/ol removed by tailwind */
+
+.markdown-body ul {
+  list-style-type: disc;
+  list-style-position: inside;
+}
+
+.markdown-body ol {
+  list-style-type: decimal;
+  list-style-position: inside;
+}
+
+.markdown-body ul ul,
+ol ul {
+  list-style-type: circle;
+  list-style-position: inside;
+  margin-left: 15px;
+}
+
+.markdown-body ol ol,
+ul ol {
+  list-style-type: lower-latin;
+  list-style-position: inside;
+  margin-left: 15px;
+}

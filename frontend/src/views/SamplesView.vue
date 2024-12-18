@@ -14,6 +14,8 @@ import {
   FwbModal,
   FwbCheckbox,
 } from "flowbite-vue";
+import { useSettingsStore } from "@/stores/settings";
+const settingsStore = useSettingsStore();
 
 type OptionsType = {
   name: string;
@@ -106,25 +108,9 @@ function string_to_options(str: string): Array<OptionsType> {
   return items.map((x) => ({ value: x, name: x }));
 }
 
-function update_options() {
-  apiClient
-    .get("settings")
-    .then((response) => {
-      const settings = response.data as Settings;
-      console.log(settings);
-      tumor_types.value = string_to_options(settings.tumor_types);
-      sources.value = string_to_options(settings.sources);
-      required_columns.value = settings.csv_required_columns.split(";");
-    })
-    .catch((error) => {
-      if (error.response.status > 400) {
-        logout();
-      }
-      console.log(error);
-    });
-}
-
-update_options();
+tumor_types.value = string_to_options(settingsStore.settings.tumor_types);
+sources.value = string_to_options(settingsStore.settings.sources);
+required_columns.value = settingsStore.settings.csv_required_columns.split(";");
 
 const samples = ref([] as Sample[]);
 

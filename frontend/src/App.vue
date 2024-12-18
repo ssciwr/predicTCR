@@ -8,8 +8,11 @@ import {
   FwbNavbarLogo,
 } from "flowbite-vue";
 import { useUserStore } from "@/stores/user";
+import { useSettingsStore } from "@/stores/settings";
 import FooterComponent from "@/components/FooterComponent.vue";
 const userStore = useUserStore();
+const settingsStore = useSettingsStore();
+settingsStore.refresh();
 const login_title = computed(() => {
   if (userStore.user !== null) {
     return userStore.user.email;
@@ -21,14 +24,17 @@ const login_title = computed(() => {
 <template>
   <fwb-navbar>
     <template #logo>
-      <fwb-navbar-logo alt="predicTCR v2" image-url="/logo.png" link="#">
+      <fwb-navbar-logo alt="predicTCR v2" image-url="/logo.png" link="/">
         predicTCR v2
       </fwb-navbar-logo>
     </template>
     <template #default="{ isShowMenu }">
       <fwb-navbar-collapse :is-show-menu="isShowMenu">
         <fwb-navbar-link link="#">
-          <RouterLink to="/">About</RouterLink>
+          <RouterLink to="/">Home</RouterLink>
+        </fwb-navbar-link>
+        <fwb-navbar-link link="#">
+          <RouterLink to="/about">About</RouterLink>
         </fwb-navbar-link>
         <fwb-navbar-link link="#">
           <RouterLink to="/samples">My samples</RouterLink>
