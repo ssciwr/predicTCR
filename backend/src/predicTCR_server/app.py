@@ -152,7 +152,6 @@ def create_app(data_path: str = "/predictcr_data"):
         return get_samples(current_user.email)
 
     @app.route("/api/settings", methods=["GET"])
-    @jwt_required()
     def get_settings():
         return db.session.get(Settings, 1).as_dict()
 
