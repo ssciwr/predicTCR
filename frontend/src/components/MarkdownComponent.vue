@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import showdown from "showdown";
+import { computed } from "vue";
 
 const props = defineProps({
   markdown: {
@@ -9,7 +10,9 @@ const props = defineProps({
 });
 
 const markdownConverter = new showdown.Converter();
-const convertedHtml = markdownConverter.makeHtml(props.markdown);
+const convertedHtml = computed(() =>
+  markdownConverter.makeHtml(props.markdown),
+);
 </script>
 
 <template>
