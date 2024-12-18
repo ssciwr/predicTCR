@@ -53,6 +53,7 @@ class Settings(db.Model):
     sources: Mapped[str] = mapped_column(String, nullable=False)
     csv_required_columns: Mapped[str] = mapped_column(String, nullable=False)
     runner_job_timeout_mins: Mapped[int] = mapped_column(Integer, nullable=False)
+    about_md: Mapped[str] = mapped_column(String, nullable=False)
 
     def as_dict(self):
         return {c: getattr(self, c) for c in inspect(self).attrs.keys()}

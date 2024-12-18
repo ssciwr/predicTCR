@@ -142,6 +142,7 @@ def test_get_settings_valid(client):
         "sources": "TIL;PMBC;Other",
         "tumor_types": "Lung;Breast;Other",
         "runner_job_timeout_mins": 60,
+        "about_md": "",
     }
 
 
@@ -156,6 +157,7 @@ def test_update_settings_valid(client):
         "sources": "a;b;g",
         "tumor_types": "1;2;6",
         "runner_job_timeout_mins": 12,
+        "about_md": "# About",
         "invalid-key": "invalid",
     }
     response = client.post("/api/admin/settings", headers=headers, json=new_settings)

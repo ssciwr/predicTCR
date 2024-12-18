@@ -446,6 +446,7 @@ def create_app(data_path: str = "/predictcr_data"):
                     sources="TIL;PMBC;Other",
                     csv_required_columns="barcode;cdr3;chain",
                     runner_job_timeout_mins=60,
+                    about_md="",
                 )
             )
             db.session.commit()
