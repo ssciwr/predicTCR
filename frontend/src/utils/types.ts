@@ -9,6 +9,7 @@ export type Sample = {
   timestamp_job_end: number;
   status: string;
   has_results_zip: boolean;
+  error_message: string;
 };
 
 export type User = {
