@@ -105,6 +105,7 @@ function download_samples_as_csv() {
       <fwb-table-head-cell v-if="admin">Runtime</fwb-table-head-cell>
       <fwb-table-head-cell>Inputs</fwb-table-head-cell>
       <fwb-table-head-cell>Results</fwb-table-head-cell>
+      <fwb-table-head-cell>Error message</fwb-table-head-cell>
       <fwb-table-head-cell v-if="admin">Actions</fwb-table-head-cell>
     </fwb-table-head>
     <fwb-table-body>
@@ -155,6 +156,7 @@ function download_samples_as_csv() {
           </template>
           <template v-else> - </template>
         </fwb-table-cell>
+        <fwb-table-cell>{{ sample.error_message }}</fwb-table-cell>
         <fwb-table-cell v-if="admin">
           <fwb-button
             @click="

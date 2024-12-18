@@ -74,6 +74,7 @@ class Runner:
         user_results: str,
         trusted_user_results: str,
         admin_results: str,
+        error_message: str,
     ):
         self.logger.info(
             f"...job {self.job_id} {'complete' if success else 'failed'} for sample id {self.sample_id}, uploading {user_results}, {trusted_user_results} and {admin_results}..."
@@ -93,6 +94,7 @@ class Runner:
                     "sample_id": self.sample_id,
                     "runner_hostname": self.runner_hostname,
                     "success": success,
+                    "error_message": error_message,
                 },
                 headers=self.auth_header,
                 timeout=30,
@@ -118,8 +120,7 @@ class Runner:
                         f"Failed to download {input_file_type}: {response.content}"
                     )
                     return self._report_job_failed(
-                        f"Failed to download {input_file_type} on {self.runner_hostname}",
-                        "",
+                        f"Failed to download {input_file_type} on {self.runner_hostname}"
                     )
                 input_file_name = f"input.{input_file_type}"
                 self.logger.debug(f"  - writing {input_file_name} to {tmpdir}...")
@@ -141,8 +142,20 @@ class Runner:
                 for result_folder in result_folders:
                     (pathlib.Path(tmpdir) / result_folder).mkdir(exist_ok=True)
                 self.logger.debug(f"  - running {tmpdir}/script.sh...")
-                proc = subprocess.run(args=["./script.sh"], cwd=tmpdir)
+                script_output_last_line = ""
+                with subprocess.Popen(
+                    args=["./script.sh"],
+                    cwd=tmpdir,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    encoding="utf-8",
+                    universal_newlines=True,
+                ) as proc:
+                    for line in proc.stdout:
+                        script_output_last_line = line.strip()
+                        self.logger.debug(f"./script.sh :: {script_output_last_line}")
                 success = proc.returncode == 0
+                error_message = script_output_last_line if not success else ""
                 self.logger.debug(
                     f"     ...{tmpdir}/script.sh {'finished' if success else 'failed'}."
                 )
@@ -154,6 +167,7 @@ class Runner:
                     admin_results=f"{tmpdir}/admin_results.zip",
                     trusted_user_results=f"{tmpdir}/trusted_user_results.zip",
                     user_results=f"{tmpdir}/user_results.zip",
+                    error_message=error_message,
                 )
                 self.poll_interval = 1
             except Exception as e:

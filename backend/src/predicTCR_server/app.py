@@ -285,6 +285,7 @@ def create_app(data_path: str = "/predictcr_data"):
         sample.trusted_user_result_file_path().unlink(missing_ok=True)
         sample.admin_result_file_path().unlink(missing_ok=True)
         sample.has_results_zip = False
+        sample.error_message = ""
         sample.status = Status.QUEUED
         db.session.commit()
         return jsonify(message="Sample added to the queue")

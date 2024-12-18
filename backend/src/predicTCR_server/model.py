@@ -85,6 +85,7 @@ class Sample(db.Model):
     timestamp_job_end: Mapped[int] = mapped_column(Integer, nullable=False)
     status: Mapped[Status] = mapped_column(Enum(Status), nullable=False)
     has_results_zip: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    error_message: Mapped[str] = mapped_column(String, nullable=False)
 
     def base_path(self) -> pathlib.Path:
         data_path = flask.current_app.config["PREDICTCR_DATA_PATH"]
@@ -216,9 +217,11 @@ def process_result(
     job.timestamp_end = timestamp_now()
     if success:
         job.status = Status.COMPLETED
+        sample.error_message = ""
     else:
         job.status = Status.FAILED
         job.error_message = error_message
+        sample.error_message = error_message
     db.session.commit()
     if sample.has_results_zip:
         logger.warning(f" --> Sample {sample_id} already has results")
@@ -503,6 +506,7 @@ def add_new_sample(
         timestamp_job_end=0,
         status=Status.QUEUED,
         has_results_zip=False,
+        error_message="",
     )
     db.session.add(new_sample)
     db.session.commit()

@@ -58,6 +58,7 @@ def add_test_samples(app, data_path: pathlib.Path):
                 timestamp_job_end=0,
                 status=status,
                 has_results_zip=False,
+                error_message="",
             )
             db.session.add(new_sample)
             db.session.commit()
