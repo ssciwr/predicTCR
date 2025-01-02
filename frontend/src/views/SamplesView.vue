@@ -2,6 +2,7 @@
 import { ref, onUnmounted } from "vue";
 import SamplesTable from "@/components/SamplesTable.vue";
 import ListComponent from "@/components/ListComponent.vue";
+import SelectWithOther from "@/components/SelectWithOther.vue";
 import ListItem from "@/components/ListItem.vue";
 import { apiClient, logout } from "@/utils/api-client";
 import type { Sample } from "@/utils/types";
@@ -15,16 +16,8 @@ import {
   FwbCheckbox,
 } from "flowbite-vue";
 import { useSettingsStore } from "@/stores/settings";
+
 const settingsStore = useSettingsStore();
-
-type OptionsType = {
-  name: string;
-  value: string;
-};
-
-const tumor_types = ref([] as Array<OptionsType>);
-const sources = ref([] as Array<OptionsType>);
-const platforms = ref([] as Array<OptionsType>);
 const required_columns = ref([] as Array<string>);
 
 function closeModalSubmit() {
@@ -103,14 +96,6 @@ async function on_csv_file_changed(event: Event) {
   }
 }
 
-function string_to_options(str: string): Array<OptionsType> {
-  const items = str.split(";");
-  return items.map((x) => ({ value: x, name: x }));
-}
-
-tumor_types.value = string_to_options(settingsStore.settings.tumor_types);
-sources.value = string_to_options(settingsStore.settings.sources);
-platforms.value = string_to_options(settingsStore.settings.platforms);
 required_columns.value = settingsStore.settings.csv_required_columns.split(";");
 
 const samples = ref([] as Sample[]);
@@ -211,26 +196,23 @@ function add_sample() {
               maxlength="128"
               class="mb-2"
             />
-            <fwb-select
+            <SelectWithOther
               v-model="tumor_type"
-              :options="tumor_types"
+              :options="settingsStore.settings.tumor_types"
               id="tumor_type"
               label="Tumor type"
-              class="mb-2"
             />
-            <fwb-select
+            <SelectWithOther
               v-model="source"
-              :options="sources"
+              :options="settingsStore.settings.sources"
               id="source"
               label="Source"
-              class="mb-2"
             />
-            <fwb-select
+            <SelectWithOther
               v-model="platform"
-              :options="platforms"
+              :options="settingsStore.settings.platforms"
               id="platform"
               label="Platform"
-              class="mb-2"
             />
             <fwb-file-input
               type="file"
