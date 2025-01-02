@@ -46,7 +46,7 @@ const csv_file_input_key = ref(0);
 const new_sample_error_message = ref("");
 
 function on_h5_file_changed(event: Event) {
-  const max_upload_size_mb = 50;
+  const max_upload_size_mb = settingsStore.settings.max_filesize_h5_mb;
   const target = event.target as HTMLInputElement;
   if (target.files != null && target.files.length > 0) {
     selected_h5_file.value = target.files[0];
@@ -81,7 +81,7 @@ async function validate_csv_file(file: File) {
 }
 
 async function on_csv_file_changed(event: Event) {
-  const max_upload_size_mb = 10;
+  const max_upload_size_mb = settingsStore.settings.max_filesize_csv_mb;
   const target = event.target as HTMLInputElement;
   if (target.files != null && target.files.length > 0) {
     selected_csv_file.value = target.files[0];

@@ -2,6 +2,7 @@
 import { FwbButton, FwbInput, FwbRange, FwbTextarea } from "flowbite-vue";
 import { useSettingsStore } from "@/stores/settings";
 import { apiClient, logout } from "@/utils/api-client";
+
 const settingsStore = useSettingsStore();
 settingsStore.refresh();
 
@@ -69,6 +70,22 @@ function update_settings() {
       :label="`Timeout for runner jobs: ${settingsStore.settings.runner_job_timeout_mins} minutes`"
       class="mb-2"
     />
+    <fwb-range
+      v-model="settingsStore.settings.max_filesize_h5_mb"
+      :steps="1"
+      :min="1"
+      :max="100"
+      :label="`Max h5 upload filesize: ${settingsStore.settings.max_filesize_h5_mb}mb`"
+      class="mb-2"
+    />
+    <fwb-range
+      v-model="settingsStore.settings.max_filesize_csv_mb"
+      :steps="1"
+      :min="1"
+      :max="100"
+      :label="`Max csv upload filesize: ${settingsStore.settings.max_filesize_csv_mb}mb`"
+      class="mb-2"
+    />
     <fwb-textarea
       v-model="settingsStore.settings.about_md"
       :rows="32"
@@ -76,7 +93,7 @@ function update_settings() {
       label="About page text (markdown)"
     ></fwb-textarea>
     <fwb-button @click="update_settings" class="mt-2" color="green">
-      Save settings</fwb-button
-    >
+      Save settings
+    </fwb-button>
   </div>
 </template>
