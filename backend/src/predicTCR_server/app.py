@@ -234,11 +234,12 @@ def create_app(data_path: str = "/predictcr_data"):
         name = form_as_dict.get("name", "")
         tumor_type = form_as_dict.get("tumor_type", "")
         source = form_as_dict.get("source", "")
+        platform = form_as_dict.get("platform", "")
         h5_file = request.files.get("h5_file")
         csv_file = request.files.get("csv_file")
         logger.info(f"Adding sample {name} from {email}")
         new_sample, error_message = add_new_sample(
-            email, name, tumor_type, source, h5_file, csv_file
+            email, name, tumor_type, source, platform, h5_file, csv_file
         )
         if new_sample is not None:
             logger.info("  - > success")
@@ -443,6 +444,7 @@ def create_app(data_path: str = "/predictcr_data"):
                     global_quota=1000,
                     tumor_types="Lung;Breast;Other",
                     sources="TIL;PMBC;Other",
+                    platforms="Illumina;Other",
                     csv_required_columns="barcode;cdr3;chain",
                     runner_job_timeout_mins=60,
                     max_filesize_h5_mb=50,

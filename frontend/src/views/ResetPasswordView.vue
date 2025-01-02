@@ -39,7 +39,6 @@ function reset_password() {
       new_password: new_password.value,
     })
     .then((response) => {
-      console.log(response);
       message.value = response.data.message;
       icon.value = "bi-person-check";
       title.value = "Password reset successful";

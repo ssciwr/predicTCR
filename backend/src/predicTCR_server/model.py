@@ -51,6 +51,7 @@ class Settings(db.Model):
     global_quota: Mapped[int] = mapped_column(Integer, nullable=False)
     tumor_types: Mapped[str] = mapped_column(String, nullable=False)
     sources: Mapped[str] = mapped_column(String, nullable=False)
+    platforms: Mapped[str] = mapped_column(String, nullable=False)
     csv_required_columns: Mapped[str] = mapped_column(String, nullable=False)
     runner_job_timeout_mins: Mapped[int] = mapped_column(Integer, nullable=False)
     max_filesize_h5_mb: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -83,6 +84,7 @@ class Sample(db.Model):
     name: Mapped[str] = mapped_column(String(128), nullable=False)
     tumor_type: Mapped[str] = mapped_column(String(128), nullable=False)
     source: Mapped[str] = mapped_column(String(128), nullable=False)
+    platform: Mapped[str] = mapped_column(String(128), nullable=False)
     timestamp: Mapped[int] = mapped_column(Integer, nullable=False)
     timestamp_job_start: Mapped[int] = mapped_column(Integer, nullable=False)
     timestamp_job_end: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -488,6 +490,7 @@ def add_new_sample(
     name: str,
     tumor_type: str,
     source: str,
+    platform: str,
     h5_file: FileStorage,
     csv_file: FileStorage,
 ) -> tuple[Sample | None, str]:
@@ -504,6 +507,7 @@ def add_new_sample(
         name=name,
         tumor_type=tumor_type,
         source=source,
+        platform=platform,
         timestamp=timestamp_now(),
         timestamp_job_start=0,
         timestamp_job_end=0,

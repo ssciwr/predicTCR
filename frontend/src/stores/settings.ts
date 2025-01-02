@@ -11,6 +11,7 @@ export const useSettingsStore = defineStore("settings", () => {
     global_quota: 1,
     tumor_types: "",
     sources: "",
+    platforms: "",
     csv_required_columns: "",
     runner_job_timeout_mins: 1,
     about_md: "",
