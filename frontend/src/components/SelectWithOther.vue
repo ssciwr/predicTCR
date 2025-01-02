@@ -5,7 +5,7 @@ const model = defineModel();
 const otherText = "Other (please specify)";
 const textInput = ref("");
 const selectInput = ref("");
-const showTextInput = ref(true);
+const showTextInput = ref(false);
 
 type OptionsType = {
   name: string;
