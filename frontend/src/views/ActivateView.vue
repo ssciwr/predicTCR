@@ -11,7 +11,6 @@ const icon = ref("bi-person-exclamation");
 apiClient
   .get(`activate/${props.activation_token}`)
   .then((response) => {
-    console.log(response);
     message.value = response.data.message;
     icon.value = "bi-person-check";
     title.value =

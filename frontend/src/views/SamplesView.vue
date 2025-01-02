@@ -4,7 +4,7 @@ import SamplesTable from "@/components/SamplesTable.vue";
 import ListComponent from "@/components/ListComponent.vue";
 import ListItem from "@/components/ListItem.vue";
 import { apiClient, logout } from "@/utils/api-client";
-import type { Sample, Settings } from "@/utils/types";
+import type { Sample } from "@/utils/types";
 import {
   FwbButton,
   FwbSelect,
@@ -24,6 +24,7 @@ type OptionsType = {
 
 const tumor_types = ref([] as Array<OptionsType>);
 const sources = ref([] as Array<OptionsType>);
+const platforms = ref([] as Array<OptionsType>);
 const required_columns = ref([] as Array<string>);
 
 function closeModalSubmit() {
@@ -39,6 +40,7 @@ const agree_to_conditions = ref(false);
 const sample_name = ref("");
 const tumor_type = ref("");
 const source = ref("");
+const platform = ref("");
 const selected_h5_file = ref(null as null | File);
 const h5_file_input_key = ref(0);
 const selected_csv_file = ref(null as null | File);
@@ -68,10 +70,8 @@ async function validate_csv_file(file: File) {
   const lines = text.split(/\n/);
   if (lines.length >= 1) {
     const columns = lines[0].split(/,/);
-    console.log(columns);
     for (const required_column of required_columns.value) {
       if (!columns.includes(required_column)) {
-        console.log(`Missing header: ${required_column}`);
         return false;
       }
     }
@@ -110,6 +110,7 @@ function string_to_options(str: string): Array<OptionsType> {
 
 tumor_types.value = string_to_options(settingsStore.settings.tumor_types);
 sources.value = string_to_options(settingsStore.settings.sources);
+platforms.value = string_to_options(settingsStore.settings.platforms);
 required_columns.value = settingsStore.settings.csv_required_columns.split(";");
 
 const samples = ref([] as Sample[]);
@@ -119,7 +120,6 @@ function update_samples() {
     .get("samples")
     .then((response) => {
       samples.value = response.data;
-      console.log(samples.value);
     })
     .catch((error) => {
       if (error.response.status > 400) {
@@ -144,7 +144,6 @@ onUnmounted(() => {
 });
 
 function update_submit_message() {
-  console.log("update_submit_message");
   apiClient
     .get("user_submit_message")
     .then((response) => {
@@ -165,6 +164,7 @@ function add_sample() {
   formData.append("name", sample_name.value);
   formData.append("tumor_type", tumor_type.value);
   formData.append("source", source.value);
+  formData.append("platform", platform.value);
   formData.append("h5_file", selected_h5_file.value as File);
   formData.append("csv_file", selected_csv_file.value as File);
   apiClient
@@ -223,6 +223,13 @@ function add_sample() {
               :options="sources"
               id="source"
               label="Source"
+              class="mb-2"
+            />
+            <fwb-select
+              v-model="platform"
+              :options="platforms"
+              id="platform"
+              label="Platform"
               class="mb-2"
             />
             <fwb-file-input

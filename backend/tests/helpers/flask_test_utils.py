@@ -53,6 +53,7 @@ def add_test_samples(app, data_path: pathlib.Path):
                 name=name,
                 tumor_type=f"tumor_type{sample_id}",
                 source=f"source{sample_id}",
+                platform=f"platform{sample_id}",
                 timestamp=sample_id,
                 timestamp_job_start=0,
                 timestamp_job_end=0,

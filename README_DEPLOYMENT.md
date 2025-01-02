@@ -9,9 +9,10 @@ To deploy the latest version on a virtual machine with docker compose installed,
 download [docker-compose.yml](https://raw.githubusercontent.com/ssciwr/predicTCR/main/docker-compose.yml), then do
 
 ```
-sudo docker compose pull
-sudo docker compose up -d
+sudo docker compose pull && sudo docker compose up -d && sudo docker system prune -af
 ```
+
+The same command can be used to update the running website to use the latest available docker images.
 
 The location of data directory, SSL keys and secret key should be set
 either in env vars or in a file `.env` in the same location as the docker compose.yml.
@@ -60,9 +61,11 @@ sudo sqlite3 docker_volume/predicTCR.db
 sqlite> UPDATE user SET is_admin=true WHERE email='user@embl.de';
 sqlite> .quit
 ```
+
 ### Visitor count
 
 To get a count of the unique visitor IPs from the nginx logs:
+
 ```
 sudo docker compose logs frontend --no-log-prefix | grep "GET" | awk '{print $1}' | sort | uniq | wc -l
 ```

@@ -58,6 +58,11 @@ function update_settings() {
       label="Sources (separated by ;)"
     ></fwb-input>
     <fwb-input
+      v-model="settingsStore.settings.platforms"
+      class="mb-2"
+      label="Platforms (separated by ;)"
+    ></fwb-input>
+    <fwb-input
       v-model="settingsStore.settings.csv_required_columns"
       class="mb-2"
       label="Required columns in CSV file (separated by ;)"

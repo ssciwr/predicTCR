@@ -3,7 +3,8 @@ export type Sample = {
   email: string;
   name: string;
   tumor_type: string;
-  source: number;
+  source: string;
+  platform: string;
   timestamp: number;
   timestamp_job_start: number;
   timestamp_job_end: number;
@@ -32,6 +33,7 @@ export type Settings = {
   global_quota: number;
   tumor_types: string;
   sources: string;
+  platforms: string;
   csv_required_columns: string;
   runner_job_timeout_mins: number;
   about_md: string;

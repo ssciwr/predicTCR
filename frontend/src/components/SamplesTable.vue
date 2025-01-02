@@ -84,9 +84,10 @@ function job_runtime(sample: Sample): string {
 }
 
 function download_samples_as_csv() {
-  let csv = "Id,Date,Email,SampleName,TumorType,Source,Status,Runtime\n";
+  let csv =
+    "Id,Date,Email,SampleName,TumorType,Source,Platform,Status,Runtime\n";
   for (const sample of props.samples) {
-    csv += `${sample.id},${timestamp_to_date(sample.timestamp)},${sample.email},${sample.name},${sample.tumor_type},${sample.source},${sample.status},${job_runtime(sample)}\n`;
+    csv += `${sample.id},${timestamp_to_date(sample.timestamp)},${sample.email},${sample.name},${sample.tumor_type},${sample.source},${sample.platform},${sample.status},${job_runtime(sample)}\n`;
   }
   download_string_as_file("samples.csv", csv);
 }
@@ -101,6 +102,7 @@ function download_samples_as_csv() {
       <fwb-table-head-cell>Sample Name</fwb-table-head-cell>
       <fwb-table-head-cell>Tumor type</fwb-table-head-cell>
       <fwb-table-head-cell>Source</fwb-table-head-cell>
+      <fwb-table-head-cell>Platform</fwb-table-head-cell>
       <fwb-table-head-cell>Status</fwb-table-head-cell>
       <fwb-table-head-cell v-if="admin">Runtime</fwb-table-head-cell>
       <fwb-table-head-cell>Inputs</fwb-table-head-cell>
@@ -122,6 +124,7 @@ function download_samples_as_csv() {
         <fwb-table-cell>{{ sample.name }}</fwb-table-cell>
         <fwb-table-cell>{{ sample.tumor_type }}</fwb-table-cell>
         <fwb-table-cell>{{ sample.source }}</fwb-table-cell>
+        <fwb-table-cell>{{ sample.platform }}</fwb-table-cell>
         <fwb-table-cell>{{ sample.status }}</fwb-table-cell>
         <fwb-table-cell v-if="admin">{{ job_runtime(sample) }}</fwb-table-cell>
         <fwb-table-cell>
