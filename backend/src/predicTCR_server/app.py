@@ -445,6 +445,8 @@ def create_app(data_path: str = "/predictcr_data"):
                     sources="TIL;PMBC;Other",
                     csv_required_columns="barcode;cdr3;chain",
                     runner_job_timeout_mins=60,
+                    max_filesize_h5_mb=50,
+                    max_filesize_csv_mb=10,
                     about_md="",
                 )
             )

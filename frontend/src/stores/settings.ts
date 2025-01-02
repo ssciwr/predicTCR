@@ -14,6 +14,8 @@ export const useSettingsStore = defineStore("settings", () => {
     csv_required_columns: "",
     runner_job_timeout_mins: 1,
     about_md: "",
+    max_filesize_h5_mb: 1,
+    max_filesize_csv_mb: 1,
   } as Settings);
 
   function refresh() {

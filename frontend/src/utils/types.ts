@@ -35,6 +35,8 @@ export type Settings = {
   csv_required_columns: string;
   runner_job_timeout_mins: number;
   about_md: string;
+  max_filesize_h5_mb: number;
+  max_filesize_csv_mb: number;
 };
 
 export type Job = {

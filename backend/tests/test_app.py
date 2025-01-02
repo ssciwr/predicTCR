@@ -142,6 +142,8 @@ def test_get_settings_valid(client):
         "sources": "TIL;PMBC;Other",
         "tumor_types": "Lung;Breast;Other",
         "runner_job_timeout_mins": 60,
+        "max_filesize_h5_mb": 50,
+        "max_filesize_csv_mb": 10,
         "about_md": "",
     }
 
@@ -157,6 +159,8 @@ def test_update_settings_valid(client):
         "sources": "a;b;g",
         "tumor_types": "1;2;6",
         "runner_job_timeout_mins": 12,
+        "max_filesize_h5_mb": 77,
+        "max_filesize_csv_mb": 12,
         "about_md": "# About",
         "invalid-key": "invalid",
     }
