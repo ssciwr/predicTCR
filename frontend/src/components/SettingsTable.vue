@@ -1,24 +1,8 @@
 <script setup lang="ts">
-import { FwbButton, FwbInput, FwbRange, FwbTextarea } from "flowbite-vue";
+import { FwbButton, FwbInput, FwbRange } from "flowbite-vue";
 import { useSettingsStore } from "@/stores/settings";
-import { apiClient, logout } from "@/utils/api-client";
 
 const settingsStore = useSettingsStore();
-settingsStore.refresh();
-
-function update_settings() {
-  apiClient
-    .post("admin/settings", settingsStore.settings)
-    .then(() => {
-      console.log("Settings updated");
-    })
-    .catch((error) => {
-      if (error.response.status > 400) {
-        logout();
-      }
-      console.log(error);
-    });
-}
 </script>
 
 <template>
@@ -91,13 +75,7 @@ function update_settings() {
       :label="`Max csv upload filesize: ${settingsStore.settings.max_filesize_csv_mb}mb`"
       class="mb-2"
     />
-    <fwb-textarea
-      v-model="settingsStore.settings.about_md"
-      :rows="32"
-      class="mb-2"
-      label="About page text (markdown)"
-    ></fwb-textarea>
-    <fwb-button @click="update_settings" class="mt-2" color="green">
+    <fwb-button @click="settingsStore.saveChanges" class="mt-2" color="green">
       Save settings
     </fwb-button>
   </div>

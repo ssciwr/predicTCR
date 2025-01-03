@@ -1,7 +1,17 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { VueperSlides, VueperSlide } from "vueperslides";
 import "vueperslides/dist/vueperslides.css";
-import items from "@/assets/news.json";
+import { useSettingsStore } from "@/stores/settings";
+const settingsStore = useSettingsStore();
+
+const items = computed(() => {
+  try {
+    return JSON.parse(settingsStore.settings.news_items_json);
+  } catch {
+    return [];
+  }
+});
 </script>
 
 <template>

@@ -39,6 +39,7 @@ export type Settings = {
   about_md: string;
   max_filesize_h5_mb: number;
   max_filesize_csv_mb: number;
+  news_items_json: string;
 };
 
 export type Job = {

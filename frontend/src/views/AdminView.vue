@@ -5,10 +5,12 @@ import UsersTable from "@/components/UsersTable.vue";
 import ListComponent from "@/components/ListComponent.vue";
 import JobsTable from "@/components/JobsTable.vue";
 import ListItem from "@/components/ListItem.vue";
+import NewsEditor from "@/components/NewsEditor.vue";
 import { FwbButton, FwbTab, FwbTabs } from "flowbite-vue";
 import { onUnmounted, ref } from "vue";
 import type { Sample } from "@/utils/types";
 import { apiClient, logout } from "@/utils/api-client";
+import AboutEditor from "@/components/AboutEditor.vue";
 
 function generate_api_token() {
   apiClient.get("admin/runner_token").then((response) => {
@@ -96,6 +98,20 @@ onUnmounted(() => {
             </ListItem>
             <ListItem title="Runner Jobs">
               <JobsTable />
+            </ListItem>
+          </ListComponent>
+        </fwb-tab>
+        <fwb-tab name="news" title="News">
+          <ListComponent>
+            <ListItem title="News items">
+              <NewsEditor />
+            </ListItem>
+          </ListComponent>
+        </fwb-tab>
+        <fwb-tab name="about" title="About">
+          <ListComponent>
+            <ListItem title="About page">
+              <AboutEditor />
             </ListItem>
           </ListComponent>
         </fwb-tab>

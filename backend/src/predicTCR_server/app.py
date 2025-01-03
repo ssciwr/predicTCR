@@ -450,6 +450,7 @@ def create_app(data_path: str = "/predictcr_data"):
                     max_filesize_h5_mb=50,
                     max_filesize_csv_mb=10,
                     about_md="",
+                    news_items_json="[]",
                 )
             )
             db.session.commit()
