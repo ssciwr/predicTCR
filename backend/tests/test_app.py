@@ -146,6 +146,7 @@ def test_get_settings_valid(client):
         "max_filesize_h5_mb": 50,
         "max_filesize_csv_mb": 10,
         "about_md": "",
+        "news_items_json": "[]",
     }
 
 
@@ -165,6 +166,7 @@ def test_update_settings_valid(client):
         "max_filesize_csv_mb": 12,
         "about_md": "# About",
         "invalid-key": "invalid",
+        "news_items_json": "[{'id': '1', 'url': 'https://example.com', 'text': 'Example'}]",
     }
     response = client.post("/api/admin/settings", headers=headers, json=new_settings)
     assert response.status_code == 200

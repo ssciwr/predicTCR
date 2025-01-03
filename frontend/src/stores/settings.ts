@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import type { Settings } from "@/utils/types";
 import { defineStore } from "pinia";
-import { apiClient } from "@/utils/api-client";
+import { apiClient, logout } from "@/utils/api-client";
 
 export const useSettingsStore = defineStore("settings", () => {
   const settings = ref({
@@ -17,6 +17,7 @@ export const useSettingsStore = defineStore("settings", () => {
     about_md: "",
     max_filesize_h5_mb: 1,
     max_filesize_csv_mb: 1,
+    news_items_json: "[]",
   } as Settings);
 
   function refresh() {
@@ -30,5 +31,19 @@ export const useSettingsStore = defineStore("settings", () => {
       });
   }
 
-  return { settings, refresh };
+  function saveChanges() {
+    apiClient
+      .post("admin/settings", settings.value)
+      .then(() => {
+        console.log("Settings updated");
+      })
+      .catch((error) => {
+        if (error.response?.status > 400) {
+          logout();
+        }
+        console.log(error);
+      });
+  }
+
+  return { settings, refresh, saveChanges };
 });

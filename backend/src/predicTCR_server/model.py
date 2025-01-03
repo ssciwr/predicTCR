@@ -57,6 +57,7 @@ class Settings(db.Model):
     max_filesize_h5_mb: Mapped[int] = mapped_column(Integer, nullable=False)
     max_filesize_csv_mb: Mapped[int] = mapped_column(Integer, nullable=False)
     about_md: Mapped[str] = mapped_column(String, nullable=False)
+    news_items_json: Mapped[str] = mapped_column(String, nullable=False)
 
     def as_dict(self):
         return {c: getattr(self, c) for c in inspect(self).attrs.keys()}
