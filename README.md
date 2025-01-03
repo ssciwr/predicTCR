@@ -14,7 +14,6 @@ Users of the site can
 - upload a sample to be analyzed
 - see a list of their requested samples
 - download the analysis results
-- TODO automatically receive an email with their results
 
 ### Admins
 
