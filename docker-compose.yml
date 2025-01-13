@@ -8,6 +8,11 @@ services:
       - JWT_SECRET_KEY=${PREDICTCR_JWT_SECRET_KEY:-}
     networks:
       - predictcr-network
+    logging:
+      driver: "local"
+      options:
+        max-size: 20m
+        max-file: 25
   frontend:
     image: ghcr.io/ssciwr/predictcr_frontend:${PREDICTCR_DOCKER_IMAGE_TAG:-latest}
     build: ./frontend
@@ -17,15 +22,26 @@ services:
     volumes:
       - ${PREDICTCR_SSL_CERT:-./cert.pem}:/predictcr_ssl_cert.pem
       - ${PREDICTCR_SSL_KEY:-./key.pem}:/predictcr_ssl_key.pem
-      - ${PREDICTCR_CERTBOT_WWW:-/var/www/certbot}:/var/www/certbot:ro
+      # to allow certbot to renew SSL certificates:
+      - /var/www/certbot:/var/www/certbot:ro
     networks:
       - predictcr-network
+    logging:
+      driver: "local"
+      options:
+        max-size: 20m
+        max-file: 25
   email:
     image: "boky/postfix"
     environment:
       - ALLOW_EMPTY_SENDER_DOMAINS="true"
     networks:
       - predictcr-network
+    logging:
+      driver: "local"
+      options:
+        max-size: 20m
+        max-file: 3
 
 networks:
   predictcr-network:
