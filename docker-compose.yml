@@ -17,6 +17,7 @@ services:
     volumes:
       - ${PREDICTCR_SSL_CERT:-./cert.pem}:/predictcr_ssl_cert.pem
       - ${PREDICTCR_SSL_KEY:-./key.pem}:/predictcr_ssl_key.pem
+      - ${PREDICTCR_CERTBOT_WWW:-/var/www/certbot}:/var/www/certbot:ro
     networks:
       - predictcr-network
   email:
