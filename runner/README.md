@@ -43,7 +43,7 @@ To update to the latest runner docker images: `docker compose pull && docker com
 To test locally using Docker, you can directly talk to the backend service (this works because both docker-compose files use the same docker network)
 
 ```
-PREDICTCR_RUNNER_API_URL="http://backend:8080/api"
-PREDICTCR_RUNNER_JWT_TOKEN="" # you need to generate this using the admin page of your local instance
-PREDICTCR_RUNNER_LOG_LEVEL=DEBUG
+PREDICTCR_API_URL="http://backend:8080/api"
+PREDICTCR_JWT_TOKEN="" # you need to generate this using the admin page of your local instance
+PREDICTCR_LOG_LEVEL=DEBUG
 ```
