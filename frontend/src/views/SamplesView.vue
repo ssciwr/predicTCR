@@ -8,7 +8,6 @@ import { apiClient, logout } from "@/utils/api-client";
 import type { Sample } from "@/utils/types";
 import {
   FwbButton,
-  FwbSelect,
   FwbFileInput,
   FwbInput,
   FwbAlert,

@@ -79,9 +79,11 @@ class Runner:
         self.logger.info(
             f"...job {self.job_id} {'complete' if success else 'failed'} for sample id {self.sample_id}, uploading {user_results}, {trusted_user_results} and {admin_results}..."
         )
-        with open(user_results, "rb") as user_result_file, open(
-            trusted_user_results, "rb"
-        ) as trusted_user_result_file, open(admin_results, "rb") as admin_result_file:
+        with (
+            open(user_results, "rb") as user_result_file,
+            open(trusted_user_results, "rb") as trusted_user_result_file,
+            open(admin_results, "rb") as admin_result_file,
+        ):
             response = requests.post(
                 url=f"{self.api_url}/runner/result",
                 files={

@@ -71,12 +71,15 @@ function openModalSignup() {
           of Heidelberg University.
         </ListItem>
         <ListItem title="Funding">
-          <div class="flex flex-col md:flex-row">
+          <div class="flex flex-col">
             <a href="https://dktk.dkfz.de/"
               ><img class="h-8 m-2 md:pr-5" src="/dktk.jpg" alt="DKTK"
             /></a>
             <a href="https://www.dkfz.de/"
               ><img class="h-8 m-2" src="/dkfz.png" alt="DKFZ"
+            /></a>
+            <a href="https://hector-stiftung.com/"
+              ><img class="h-20 m-2" src="/hector.png" alt="Hectoor Stiftung"
             /></a>
           </div>
         </ListItem>
