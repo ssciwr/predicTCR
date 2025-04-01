@@ -33,10 +33,18 @@ services:
         max-file: 25
   email:
     image: "boky/postfix"
-    environment:
-      - ALLOW_EMPTY_SENDER_DOMAINS="true"
+    hostname: mail.predictcr.com
+    restart: always
     networks:
       - predictcr-network
+    environment:
+      - RELAYHOST=${RELAYHOST:-}
+      - POSTFIX_myhostname=mail.predictcr.com
+      - POSTFIX_mydomain=predictcr.com
+      - ALLOWED_SENDER_DOMAINS=predictcr.com
+      - DKIM_AUTOGENERATE=true
+    volumes:
+      - ./opendkim-keys:/etc/opendkim/keys
     logging:
       driver: "local"
       options:
