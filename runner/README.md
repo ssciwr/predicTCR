@@ -4,12 +4,13 @@ The runner is a service packaged as a Docker container that regularly polls the 
 
 If a job is available, it
 
-- downloads the input h5/csv files for this job to a temporary directoy
+- downloads the input h5/csv files for this job to a temporary directory
+- creates input.json in this directory, which contains the job parameters
 - creates these empty folders in this directory:
   - /user_results
   - /trusted_user_results
   - /admin_results
-- copies the contents of the `PREDICTCR_RUNNER_SCRIPT_DIR` folder to this directory
+- copies the contents of the `PREDICTCR_SCRIPT_FOLDER` folder to this directory
 - runs script.sh in this directory
 - uploads each results directory as a zip file to the web service
 
@@ -28,7 +29,7 @@ with the JWT token, the location of your script folder, and other desired settin
 ```
 PREDICTCR_API_URL="https://predictcr.com/api"
 PREDICTCR_JWT_TOKEN="abc123"
-PREDICTCR_RUNNER_SCRIPT_DIR="./script"
+PREDICTCR_SCRIPT_FOLDER="./script"
 PREDICTCR_RUNNER_JOBS=4
 PREDICTCR_MAXPOLL_INTERVAL=60
 ```

@@ -249,7 +249,14 @@ def test_runner_valid_success(client, result_zipfile):
         headers=headers,
     )
     assert request_job_response.status_code == 200
-    assert request_job_response.json == {"sample_id": 1, "job_id": 1}
+    assert request_job_response.json == {
+        "sample_id": 1,
+        "job_id": 1,
+        "sample_name": "s1",
+        "sample_tumor_type": "tumor_type1",
+        "sample_source": "source1",
+        "sample_platform": "platform1",
+    }
     # upload successful result
     assert _upload_result(client, result_zipfile, 1, 1).status_code == 200
     response = client.post(
@@ -270,7 +277,14 @@ def test_runner_valid_failure(client, result_zipfile):
         headers=headers,
     )
     assert request_job_response.status_code == 200
-    assert request_job_response.json == {"sample_id": 1, "job_id": 1}
+    assert request_job_response.json == {
+        "sample_id": 1,
+        "job_id": 1,
+        "sample_name": "s1",
+        "sample_tumor_type": "tumor_type1",
+        "sample_source": "source1",
+        "sample_platform": "platform1",
+    }
     # upload failure result
     result_response = client.post(
         "/api/runner/result",

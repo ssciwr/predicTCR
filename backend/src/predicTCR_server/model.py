@@ -261,7 +261,7 @@ def is_valid_password(password: str) -> bool:
 def _send_account_enabled_email(email: str):
     msg_body = (
         f"Your predicTCR account has been enabled.\n\n"
-        f"You can now submit samples for analysis at https://{predicTCR_url}.\n\n"
+        f"You can now submit samples for analysis at https://{predicTCR_url}."
     )
     send_email(email, "predicTCR account enabled", msg_body)
 
