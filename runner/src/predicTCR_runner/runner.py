@@ -6,6 +6,7 @@ import logging
 import pathlib
 import os
 import tempfile
+import json
 import shutil
 import subprocess
 
@@ -19,12 +20,14 @@ class Runner:
         self.runner_hostname = os.environ.get("HOSTNAME", "unknown")
         self.logger = logging.getLogger(__name__)
         self.job_id: int | None = None
+        self.request_job_response: dict | None = None
         self.sample_id: int | None = None
 
     def _request_job(self) -> bool:
         self.logger.debug(f"Requesting job from {self.api_url}...")
         self.job_id = None
         self.sample_id = None
+        self.request_job_response = None
         response = requests.post(
             url=f"{self.api_url}/runner/request_job",
             json={"runner_hostname": self.runner_hostname},
@@ -38,13 +41,13 @@ class Runner:
             )
             return False
         elif response.status_code == 200:
-            self.job_id = response.json().get("job_id", None)
-            self.sample_id = response.json().get("sample_id", None)
+            self.request_job_response = response.json()
+            self.job_id = self.request_job_response.get("job_id", None)
+            self.sample_id = self.request_job_response.get("sample_id", None)
             self.logger.debug(
                 f"  -> job id {self.job_id} for sample id {self.sample_id}."
             )
-            if self.job_id is not None and self.sample_id is not None:
-                return True
+            return self.job_id is not None and self.sample_id is not None
         else:
             self.logger.error(
                 f"request_job failed with {response.status_code}: {response.content}"
@@ -134,6 +137,9 @@ class Runner:
                     "trusted_user_results",
                     "user_results",
                 ]
+                self.logger.debug(f"  - writing job info to {tmpdir}/input.json...")
+                with open(f"{tmpdir}/input.json", "w") as f:
+                    json.dump(self.request_job_response, f)
                 self.logger.debug(
                     f"  - copying contents of script folder to {tmpdir}..."
                 )

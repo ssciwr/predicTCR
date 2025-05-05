@@ -375,6 +375,9 @@ def create_app(data_path: str = "/predictcr_data"):
         sample_id = request_job()
         if sample_id is None:
             return jsonify(message="No job available"), 204
+        sample = db.session.get(Sample, sample_id)
+        if sample is None:
+            return jsonify(message="Sample not found"), 400
         new_job = Job(
             id=None,
             sample_id=sample_id,
@@ -387,7 +390,14 @@ def create_app(data_path: str = "/predictcr_data"):
         )
         db.session.add(new_job)
         db.session.commit()
-        return {"job_id": new_job.id, "sample_id": sample_id}
+        return {
+            "job_id": new_job.id,
+            "sample_id": sample_id,
+            "sample_name": sample.name,
+            "sample_tumor_type": sample.tumor_type,
+            "sample_source": sample.source,
+            "sample_platform": sample.platform,
+        }
 
     @app.route("/api/runner/result", methods=["POST"])
     @cross_origin()
