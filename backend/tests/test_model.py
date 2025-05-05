@@ -59,8 +59,16 @@ def test_add_new_user_valid(app):
         # activate account with invalid token
         model.activate_user("not_a_real_activation_token")
         assert user.activated is False
+        # activate account with valid token
         model.activate_user(activation_token)
         assert user.activated is True
+        # enable user
+        model.update_user({"email": email, "enabled": True})
+        # user gets an email when their account has been enabled
+        email_msg = app.config["TESTING_ONLY_LAST_SMTP_MESSAGE"]
+        assert email_msg["To"] == email
+        body = str(email_msg.get_body()).replace("=\n", "")
+        assert "account has been enabled" in body.lower()
         # set new password
         assert user.set_password("wrong", "new") is False
         assert user.check_password(password) is True

@@ -258,6 +258,14 @@ def is_valid_password(password: str) -> bool:
     return re.match(r"^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$", password) is not None
 
 
+def _send_account_enabled_email(email: str):
+    msg_body = (
+        f"Your predicTCR account has been enabled.\n\n"
+        f"You can now submit samples for analysis at https://{predicTCR_url}.\n\n"
+    )
+    send_email(email, "predicTCR account enabled", msg_body)
+
+
 def _send_activation_email(email: str):
     secret_key = flask.current_app.config["JWT_SECRET_KEY"]
     token = encode_activation_token(email, secret_key)
@@ -396,6 +404,11 @@ def update_user(user_updates: dict) -> tuple[str, int]:
     if user is None:
         logger.info(f"  -> Unknown email address '{email}'")
         return f"Unknown email address {email}", 404
+    if not user.enabled and user_updates.get("enabled", None) is True:
+        try:
+            _send_account_enabled_email(email)
+        except Exception as e:
+            logger.warning(f"Send account enabled email failed: {e}")
     for key in [
         "enabled",
         "activated",
