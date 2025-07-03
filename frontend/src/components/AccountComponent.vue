@@ -53,17 +53,14 @@ function do_change_password() {
 <template v-if="userStore.user != null">
   <CardComponent title="My account">
     <p>You are currently logged in as {{ current_email }}</p>
-    <p>
-      <fwb-button
-        class="my-2"
-        @click="
-          userStore.user = null;
-          userStore.token = '';
-        "
-      >
-        Logout
-      </fwb-button>
-    </p>
+    <fwb-button
+      @click="
+        userStore.user = null;
+        userStore.token = '';
+      "
+    >
+      Logout
+    </fwb-button>
   </CardComponent>
   <CardComponent title="Change password">
     <fwb-input
@@ -75,7 +72,6 @@ function do_change_password() {
       placeholder="current password"
       maxlength="256"
       autocomplete="current-password"
-      class="mb-2"
     />
     <fwb-input
       v-model="new_password"
@@ -86,13 +82,8 @@ function do_change_password() {
       placeholder="new password"
       :title="new_password_message"
       maxlength="256"
-      class="mb-2"
     />
-    <fwb-alert
-      type="danger"
-      v-if="new_password_message.length > 0"
-      class="mb-2"
-    >
+    <fwb-alert type="danger" v-if="new_password_message.length > 0">
       {{ new_password_message }}
     </fwb-alert>
     <fwb-input
@@ -104,19 +95,13 @@ function do_change_password() {
       placeholder="new password"
       :title="new_password2_message"
       maxlength="256"
-      class="mb-2"
     />
-    <fwb-alert
-      type="danger"
-      v-if="new_password2_message.length > 0"
-      class="mb-2"
-    >
+    <fwb-alert type="danger" v-if="new_password2_message.length > 0">
       {{ new_password2_message }}
     </fwb-alert>
     <fwb-button
       @click="do_change_password"
       :title="new_password_message + ' ' + new_password2_message"
-      class="mb-2"
       :disabled="
         current_password.length === 0 ||
         new_password.length === 0 ||

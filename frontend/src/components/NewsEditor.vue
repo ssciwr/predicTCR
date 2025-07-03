@@ -41,7 +41,7 @@ function save() {
 <template>
   <div class="flex flex-col mb-2 p-2" v-if="settingsStore.settings">
     <fwb-list-group-item v-for="item in items" v-bind:key="item.id">
-      <div class="flex flex-col mb-4 flex-grow mr-2">
+      <div class="flex flex-col space-y-4 mb-4 flex-grow mr-2">
         <fwb-input v-model="item.id" label="ID" class="mb-1" />
         <fwb-input v-model="item.url" label="URL" class="mb-1" />
         <fwb-input v-model="item.text" label="Text" class="mb-1" />

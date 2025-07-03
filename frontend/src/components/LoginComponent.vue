@@ -31,7 +31,7 @@ function do_login() {
 
 <template>
   <div>
-    <form @submit.prevent="do_login">
+    <form @submit.prevent="do_login" class="flex flex-col space-y-4">
       <fwb-input
         v-model="login_email_address"
         required
@@ -40,7 +40,6 @@ function do_login() {
         maxlength="256"
         autocomplete="username"
         label="Email"
-        class="mb-2"
       />
       <fwb-input
         v-model="login_password"
@@ -50,9 +49,8 @@ function do_login() {
         maxlength="256"
         autocomplete="current-password"
         label="Password"
-        class="mb-2"
       />
-      <fwb-button type="submit" class="mb-2">Login</fwb-button>
+      <fwb-button type="submit">Login</fwb-button>
     </form>
     <fwb-alert type="danger" v-if="login_error_message.length > 0">
       {{ login_error_message }}

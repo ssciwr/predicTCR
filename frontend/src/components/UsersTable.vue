@@ -136,21 +136,15 @@ function download_users_as_csv() {
       </div>
     </template>
     <template v-if="current_user" #body>
-      <div class="flex flex-col m-2 p-2">
+      <div class="flex flex-col space-y-4 m-2 p-2">
         <fwb-checkbox
           v-model="current_user.activated"
           label="Email address activated"
-          class="mb-2"
         />
-        <fwb-checkbox
-          v-model="current_user.enabled"
-          label="Account enabled"
-          class="mb-2"
-        />
+        <fwb-checkbox v-model="current_user.enabled" label="Account enabled" />
         <fwb-checkbox
           v-model="current_user.full_results"
           label="Full results access"
-          class="mb-2"
         />
         <fwb-range
           v-model="current_user.quota"
@@ -158,7 +152,6 @@ function download_users_as_csv() {
           :min="0"
           :max="99"
           :label="`Remaining quota: ${current_user.quota}`"
-          class="mb-2"
         />
         <fwb-range
           v-model="current_user.submission_interval_minutes"
@@ -166,7 +159,6 @@ function download_users_as_csv() {
           :min="0"
           :max="60"
           :label="`Interval between submissions: ${current_user.submission_interval_minutes} minutes`"
-          class="mb-2"
         />
       </div>
     </template>

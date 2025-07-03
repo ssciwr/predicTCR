@@ -46,42 +46,46 @@ function openModalSignup() {
     <div class="p-4">
       <ListComponent>
         <ListItem title="About">
-          Based on code from the
-          <fwb-a href="https://www.dkfz.de/" target="_blank">DKFZ</fwb-a>. Read
-          our paper at
-          <fwb-a
-            href="https://www.nature.com/articles/s41587-024-02161-y"
-            target="_blank"
-            >Nature Biotechnology</fwb-a
-          >
+          <p>
+            Based on code from the
+            <fwb-a href="https://www.dkfz.de/" target="_blank">DKFZ</fwb-a>.
+            Read our paper at
+            <fwb-a
+              href="https://www.nature.com/articles/s41587-024-02161-y"
+              target="_blank"
+              >Nature Biotechnology</fwb-a
+            >
+          </p>
         </ListItem>
         <ListItem title="Feedback">
-          Questions or feedback about this service are welcome at
-          <fwb-a href="mailto:predictcr@dkfz.de">predictcr@dkfz.de</fwb-a>
+          <p>
+            Questions or feedback about this service are welcome at
+            <fwb-a href="mailto:predictcr@dkfz.de">predictcr@dkfz.de</fwb-a>
+          </p>
         </ListItem>
         <ListItem title="References">
-          The
-          <fwb-a href="https://github.com/ssciwr/predicTCR"
-            >predicTCR web service</fwb-a
-          >
-          was developed by the
-          <fwb-a href="https://ssc.iwr.uni-heidelberg.de/"
-            >Scientific Software Center</fwb-a
-          >
-          of Heidelberg University.
+          <p>
+            The
+            <fwb-a href="https://github.com/ssciwr/predicTCR"
+              >predicTCR web service</fwb-a
+            >
+            was developed by the
+            <fwb-a href="https://ssc.iwr.uni-heidelberg.de/"
+              >Scientific Software Center</fwb-a
+            >
+            of Heidelberg University.
+          </p>
         </ListItem>
         <ListItem title="Funding">
-          <div class="flex flex-col">
-            <a href="https://dktk.dkfz.de/"
-              ><img class="h-8 m-2 md:pr-5" src="/dktk.jpg" alt="DKTK"
-            /></a>
-            <a href="https://www.dkfz.de/"
-              ><img class="h-8 m-2" src="/dkfz.png" alt="DKFZ"
-            /></a>
-            <a href="https://hector-stiftung.com/"
-              ><img class="h-20 m-2" src="/hector.png" alt="Hectoor Stiftung"
-            /></a>
-          </div>
+          <a href="https://dktk.dkfz.de/"
+            ><img class="h-8 mt-2" src="/dktk.jpg" alt="DKTK"
+          /></a>
+          <a href="https://www.dkfz.de/"
+            ><img class="h-8" src="/dkfz.png" alt="DKFZ"
+          /></a>
+          <a href="https://hector-stiftung.com/"
+            ><img class="h-20" src="/hector.png" alt="Hectoor Stiftung"
+          /></a>
         </ListItem>
       </ListComponent>
     </div>
