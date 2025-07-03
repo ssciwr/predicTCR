@@ -271,26 +271,27 @@ function add_sample() {
       <div class="flex items-center text-lg">Conditions of use</div>
     </template>
     <template #body>
-      <fwb-p>
-        This service is provided for non-commercial use only, and is not to be
-        used for training models.
-      </fwb-p>
-      <fwb-p>
-        Note: predicTCR performs best on scSEQ datasets subsetted to contain
-        only T cells, for more details see the
-        <fwb-al href="/about" target="_blank" rel="noopener noreferrer"
-          >About</fwb-al
+      <div class="flex flex-col space-y-4">
+        <fwb-p>
+          This service is provided for non-commercial use only, and is not to be
+          used for training models.
+        </fwb-p>
+        <fwb-p>
+          Note: predicTCR performs best on scSEQ datasets subsetted to contain
+          only T cells, for more details see the
+          <fwb-a href="/about" target="_blank" rel="noopener noreferrer"
+            >About
+          </fwb-a>
+          section.
+        </fwb-p>
+        <fwb-checkbox
+          v-model="agree_to_conditions"
+          label="I agree to the conditions of use"
+        />
+        <fwb-button @click="add_sample" :disabled="!agree_to_conditions"
+          >Submit</fwb-button
         >
-        section.
-      </fwb-p>
-      <fwb-checkbox
-        v-model="agree_to_conditions"
-        label="I agree to the conditions of use"
-        class="py-4"
-      />
-      <fwb-button @click="add_sample" :disabled="!agree_to_conditions"
-        >Submit</fwb-button
-      >
+      </div>
     </template>
   </fwb-modal>
 </template>
