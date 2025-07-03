@@ -19,7 +19,7 @@ defineProps({
     </fwb-timeline-point>
     <fwb-timeline-content>
       <fwb-timeline-title>{{ title }}</fwb-timeline-title>
-      <fwb-timeline-body>
+      <fwb-timeline-body class="flex flex-col space-y-4">
         <slot></slot>
       </fwb-timeline-body>
     </fwb-timeline-content>

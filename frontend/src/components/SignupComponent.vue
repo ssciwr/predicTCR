@@ -44,7 +44,7 @@ function do_signup() {
       manually activated by an administrator before you are able to log in:
     </p>
     <div class="mt-4">
-      <form @submit.prevent="do_signup">
+      <form @submit.prevent="do_signup" class="flex flex-col space-y-4">
         <fwb-input
           v-model="signup_email_address"
           required
@@ -53,7 +53,6 @@ function do_signup() {
           maxlength="256"
           autocomplete="username"
           label="Email"
-          class="mb-2"
           :validation-status="
             signup_email_address_message.length > 0 ? 'error' : 'success'
           "
@@ -70,7 +69,6 @@ function do_signup() {
           label="Password"
           placeholder=""
           maxlength="256"
-          class="mb-2"
           :validation-status="
             signup_password_message.length > 0 ? 'error' : 'success'
           "
@@ -81,7 +79,6 @@ function do_signup() {
         </fwb-input>
         <fwb-button
           type="submit"
-          class="mb-2"
           :disabled="
             signup_email_address_message.length +
               signup_password_message.length >

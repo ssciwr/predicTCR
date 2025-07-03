@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onUnmounted } from "vue";
+import { onUnmounted, ref } from "vue";
 import SamplesTable from "@/components/SamplesTable.vue";
 import ListComponent from "@/components/ListComponent.vue";
 import SelectWithOther from "@/components/SelectWithOther.vue";
@@ -7,12 +7,13 @@ import ListItem from "@/components/ListItem.vue";
 import { apiClient, logout } from "@/utils/api-client";
 import type { Sample } from "@/utils/types";
 import {
+  FwbA,
+  FwbAlert,
   FwbButton,
+  FwbCheckbox,
   FwbFileInput,
   FwbInput,
-  FwbAlert,
   FwbModal,
-  FwbCheckbox,
 } from "flowbite-vue";
 import { useSettingsStore } from "@/stores/settings";
 
@@ -270,8 +271,18 @@ function add_sample() {
       <div class="flex items-center text-lg">Conditions of use</div>
     </template>
     <template #body>
-      This service is provided for non-commercial use only, and is not to be
-      used for training models.
+      <fwb-p>
+        This service is provided for non-commercial use only, and is not to be
+        used for training models.
+      </fwb-p>
+      <fwb-p>
+        Note: predicTCR performs best on scSEQ datasets subsetted to contain
+        only T cells, for more details see the
+        <fwb-al href="/about" target="_blank" rel="noopener noreferrer"
+          >About</fwb-al
+        >
+        section.
+      </fwb-p>
       <fwb-checkbox
         v-model="agree_to_conditions"
         label="I agree to the conditions of use"

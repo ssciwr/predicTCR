@@ -16,9 +16,11 @@ defineProps({
         >
           {{ title }}
         </h5>
-        <p class="font-normal text-gray-700 dark:text-gray-400">
+        <div
+          class="flex flex-col space-y-4 font-normal text-gray-700 dark:text-gray-400"
+        >
           <slot></slot>
-        </p>
+        </div>
       </div>
     </fwb-card>
   </div>

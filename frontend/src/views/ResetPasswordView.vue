@@ -63,8 +63,12 @@ function reset_password() {
 <template>
   <main class="flex flex-col items-center justify-center">
     <CardComponent :title="title" :icon="icon">
-      <form @submit.prevent="reset_password" v-if="show_form">
-        <p>
+      <form
+        @submit.prevent="reset_password"
+        v-if="show_form"
+        class="flex flex-col space-y-4"
+      >
+        <div>
           <label for="email_current">Email address:</label>
           <input
             v-model="email"
@@ -72,8 +76,8 @@ function reset_password() {
             placeholder="your.name@uni-heidelberg.de"
             maxlength="256"
           />
-        </p>
-        <p>
+        </div>
+        <div>
           <label for="passwd_new">New Password:</label>
           <input
             v-model="new_password"
@@ -84,8 +88,8 @@ function reset_password() {
             maxlength="256"
           />
           <span class="error-message pad-left">{{ new_password_message }}</span>
-        </p>
-        <p>
+        </div>
+        <div>
           <label for="passwd_new2">Confirm New Password:</label>
           <input
             v-model="new_password2"
@@ -98,7 +102,7 @@ function reset_password() {
           <span class="error-message pad-left">{{
             new_password2_message
           }}</span>
-        </p>
+        </div>
         <input
           type="submit"
           :title="new_password_message + ' ' + new_password2_message"
